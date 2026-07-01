@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/MotionPlusPlus.dir/src/main.cpp.o CMakeFiles/MotionPlusPlus.dir/src/DeviceManager.cpp.o -o MotionPlusPlus  /usr/lib/x86_64-linux-gnu/libevdev.so 

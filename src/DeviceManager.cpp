@@ -7,18 +7,16 @@ DeviceManager::~DeviceManager() {
 
 }
 
-vector<InputDevice> DeviceManager::scan() {
+expected<vector<InputDevice>, string> DeviceManager::scan() {
   vector<InputDevice> input_devices;
+  error_code ec;
 
-  try {
-    for (const auto& file : directory_iterator("/dev/input")) {
-      if (file.path().filename().string().starts_with("event")) {
-        input_devices.emplace_back(file.path());
-      }
+  for (const auto& file : directory_iterator("/dev/input", ec)) {
+    if (ec) return unexpected(ec.message());
+
+    if (file.path().filename().string().starts_with("event")) {
+      input_devices.emplace_back(file.path());
     }
-  }
-  catch (const filesystem_error& e) {
-    std::cerr << e.what() << endl;
   }
 
   return input_devices;
@@ -29,7 +27,7 @@ bool DeviceManager::populateMetadata(vector<InputDevice> &input_devices) {
     int fd = open(in_d.path.string().c_str(), O_RDONLY);
 
     if (fd < 0) {
-      std::cerr << "Error opening device. Do you forget sudo?" << std::endl;
+      println("Error opening device: {}", strerror(errno));
       return false;
     }
 
@@ -37,7 +35,7 @@ bool DeviceManager::populateMetadata(vector<InputDevice> &input_devices) {
     int rc = libevdev_new_from_fd(fd, &dev);
 
     if (rc < 0) {
-      std::cerr << "Error generating libevdev: " << strerror(-rc) << std::endl;
+      println("Error generating libevdev: {}", strerror(-rc));
       close(fd);
       return false;
     }

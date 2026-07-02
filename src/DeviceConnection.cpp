@@ -13,7 +13,7 @@ DeviceConnection::DeviceConnection(const InputDevice &device) : device_(device){
 
   if (rc_ < 0) {
     close(fd_);
-    throw runtime_error("Error generating libevdev: " + string(strerror(-rc_)) );
+    throw runtime_error("Error generating libevdev: " + string(strerror(-rc_)));
   }
 
 }
@@ -23,14 +23,26 @@ DeviceConnection::~DeviceConnection() {
   if (fd_ >= 0) close(fd_);
 }
 
-input_event DeviceConnection::read() {
+expected<input_event, string> DeviceConnection::read() {
   input_event ev;
 
   rc_ = libevdev_next_event(dev_, LIBEVDEV_READ_FLAG_NORMAL, &ev);
 
-  if (rc_ != LIBEVDEV_READ_STATUS_SUCCESS) {
-    return input_event();
+  if (rc_ == LIBEVDEV_READ_STATUS_SUCCESS) {
+    return ev;
+  }
+  else if (rc_ == LIBEVDEV_READ_STATUS_SYNC) {
+    // dropped events, need to sync
+    while (rc_ == LIBEVDEV_READ_STATUS_SYNC) {
+      rc_ = libevdev_next_event(dev_, LIBEVDEV_READ_FLAG_SYNC, &ev);
+    }
+    return ev;
+  }
+  else if (rc_ == -EAGAIN) {
+    return unexpected("No event available.");
+  }
+  else {
+    return unexpected(strerror(-rc_));
   }
 
-  return ev;
 }

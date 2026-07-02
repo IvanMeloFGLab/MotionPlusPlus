@@ -15,7 +15,8 @@ private:
 public:
   DeviceConnection(DeviceConnection&& other);
   DeviceConnection(const DeviceConnection&) = delete;
-  ~DeviceConnection();
+  DeviceConnection& operator=(DeviceConnection&&) = delete;
+  ~DeviceConnection() noexcept;
 
   static std::expected<DeviceConnection, std::error_code> connect(const InputDevice &device);
 

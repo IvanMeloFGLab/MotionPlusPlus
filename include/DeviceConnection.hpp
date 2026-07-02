@@ -6,16 +6,23 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <cstring>
+#include <cerrno>
 
 class DeviceConnection {
+private:
+  DeviceConnection(const InputDevice &device, int fd, libevdev *dev);
+
 public:
-  DeviceConnection(const InputDevice &device);
+  DeviceConnection(DeviceConnection&& other);
+  DeviceConnection(const DeviceConnection&) = delete;
   ~DeviceConnection();
 
-  std::expected<input_event, std::string> read();
+  static std::expected<DeviceConnection, std::error_code> connect(const InputDevice &device);
+
+  std::expected<input_event, std::error_code> read();
 
 private:
   const InputDevice& device_;
+  int fd_;
   libevdev *dev_;
-  int fd_, rc_;
 };

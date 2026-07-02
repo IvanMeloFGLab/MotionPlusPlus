@@ -1,5 +1,5 @@
-#include <iostream>
 #include <print>
+#include <cerrno>
 #include "DeviceManager.hpp"
 #include "DeviceConnection.hpp"
 
@@ -14,14 +14,14 @@ int main() {
   auto input_devices = dm.scan();
 
   if (!input_devices) {
-    println("Error: {}", input_devices.error());
+    println("Scanning error: {}", input_devices.error().message());
     return 1;
   }
 
   auto res = dm.populateMetadata(*input_devices);
 
   if (!res) {
-    println("Error while populating metadata.");
+    println("Populating metadata error: {}", res.error().message());
     return 1;
   }
 
@@ -29,21 +29,21 @@ int main() {
     println("{}", in_d);
   }
 
-  try {
-    DeviceConnection conn((*input_devices)[15]);
+  auto conn = DeviceConnection::connect((*input_devices)[15]);
 
-    while (true) {
-      auto ev = conn.read();
-      if (!ev) {
-        if (ev.error() == "No event available.") continue;
-        println("Error: {}", ev.error());
-        return 1;
-      }
-      println("Type: {}, Code: {}, Value: {}", (*ev).type, (*ev).code, (*ev).value);
-    }
-  } catch (const std::exception& e){
-    println("Error while connecting to device: {}", e.what());
+  if (!conn) {
+    println("Connection error: {}", conn.error().message());
     return 1;
+  }
+
+  while (true) {
+    auto ev = conn->read();
+    if (!ev) {
+      if (ev.error().value() == EAGAIN) continue;
+      println("Event error: {}", ev.error().message());
+      return 1;
+    }
+    println("Type: {}, Code: {}, Value: {}", ev->type, ev->code, ev->value);
   }
 
   return 0;

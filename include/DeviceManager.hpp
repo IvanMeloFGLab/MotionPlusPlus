@@ -36,6 +36,6 @@ public:
   DeviceManager();
   ~DeviceManager();
 
-  std::expected<std::vector<InputDevice>, std::string> scan();
-  bool populateMetadata(std::vector<InputDevice> &input_devices);
+  std::expected<std::vector<InputDevice>, std::error_code> scan();
+  std::expected<void, std::error_code> populateMetadata(std::vector<InputDevice> &input_devices);
 };

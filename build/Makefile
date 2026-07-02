@@ -117,24 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named MotionPlusPlus
+# Target rules for targets named motionplusplus
 
 # Build rule for target.
-MotionPlusPlus: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 MotionPlusPlus
-.PHONY : MotionPlusPlus
+motionplusplus: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 motionplusplus
+.PHONY : motionplusplus
 
 # fast build rule for target.
-MotionPlusPlus/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/build
-.PHONY : MotionPlusPlus/fast
+motionplusplus/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/build
+.PHONY : motionplusplus/fast
 
 src/DeviceConnection.o: src/DeviceConnection.cpp.o
 .PHONY : src/DeviceConnection.o
 
 # target to build an object file
 src/DeviceConnection.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/DeviceConnection.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o
 .PHONY : src/DeviceConnection.cpp.o
 
 src/DeviceConnection.i: src/DeviceConnection.cpp.i
@@ -142,7 +142,7 @@ src/DeviceConnection.i: src/DeviceConnection.cpp.i
 
 # target to preprocess a source file
 src/DeviceConnection.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/DeviceConnection.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.i
 .PHONY : src/DeviceConnection.cpp.i
 
 src/DeviceConnection.s: src/DeviceConnection.cpp.s
@@ -150,7 +150,7 @@ src/DeviceConnection.s: src/DeviceConnection.cpp.s
 
 # target to generate assembly for a file
 src/DeviceConnection.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/DeviceConnection.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.s
 .PHONY : src/DeviceConnection.cpp.s
 
 src/DeviceManager.o: src/DeviceManager.cpp.o
@@ -158,7 +158,7 @@ src/DeviceManager.o: src/DeviceManager.cpp.o
 
 # target to build an object file
 src/DeviceManager.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/DeviceManager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o
 .PHONY : src/DeviceManager.cpp.o
 
 src/DeviceManager.i: src/DeviceManager.cpp.i
@@ -166,7 +166,7 @@ src/DeviceManager.i: src/DeviceManager.cpp.i
 
 # target to preprocess a source file
 src/DeviceManager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/DeviceManager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.i
 .PHONY : src/DeviceManager.cpp.i
 
 src/DeviceManager.s: src/DeviceManager.cpp.s
@@ -174,7 +174,7 @@ src/DeviceManager.s: src/DeviceManager.cpp.s
 
 # target to generate assembly for a file
 src/DeviceManager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/DeviceManager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.s
 .PHONY : src/DeviceManager.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -182,7 +182,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -190,7 +190,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -198,7 +198,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MotionPlusPlus.dir/build.make CMakeFiles/MotionPlusPlus.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -209,7 +209,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... MotionPlusPlus"
+	@echo "... motionplusplus"
 	@echo "... src/DeviceConnection.o"
 	@echo "... src/DeviceConnection.i"
 	@echo "... src/DeviceConnection.s"

@@ -294,7 +294,9 @@ CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o: ../src/DeviceConnectio
   /usr/include/c++/14/cstring \
   /usr/include/string.h \
   /usr/include/strings.h \
-  /usr/include/c++/14/print
+  /usr/include/c++/14/print \
+  /usr/include/c++/14/utility \
+  /usr/include/c++/14/bits/stl_relops.h
 
 CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o: ../src/DeviceManager.cpp \
   /usr/include/stdc-predef.h \
@@ -588,7 +590,9 @@ CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o: ../src/DeviceManager.cpp 
   /usr/include/c++/14/cstring \
   /usr/include/string.h \
   /usr/include/strings.h \
-  /usr/include/c++/14/print
+  /usr/include/c++/14/print \
+  /usr/include/c++/14/utility \
+  /usr/include/c++/14/bits/stl_relops.h
 
 CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/stdc-predef.h \
@@ -883,6 +887,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/c++/14/cstring \
   /usr/include/string.h \
   /usr/include/strings.h \
+  /usr/include/c++/14/utility \
+  /usr/include/c++/14/bits/stl_relops.h \
   ../include/DeviceConnection.hpp
 
 
@@ -1104,6 +1110,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 
 ../include/DeviceManager.hpp:
 
+/usr/include/c++/14/bits/stl_relops.h:
+
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
 /usr/include/c++/14/bits/hash_bytes.h:
@@ -1251,6 +1259,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/c++/14/bits/shared_ptr.h:
+
+/usr/include/c++/14/utility:
 
 /usr/include/asm-generic/bitsperlong.h:
 

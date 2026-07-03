@@ -21,7 +21,7 @@ int main() {
   auto res = dm.populateMetadata(*input_devices);
 
   if (!res) {
-    println("Populating metadata error: {}", res.error().message());
+    println("Populating metadata error: {}. From {} device.", res.error().first.message(), res.error().second);
     return 1;
   }
 

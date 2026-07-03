@@ -36,6 +36,14 @@ int main() {
     return 1;
   }
 
+  auto groups = dm.groupByHid(*input_devices);
+
+  for (const auto& [hid, vec] : groups) {
+    for (const auto &in_d : vec) {
+      println("Hid: {}, Dev: {}", hid, in_d->name);
+    }
+  }
+
   while (true) {
     auto ev = conn->read();
     if (!ev) {

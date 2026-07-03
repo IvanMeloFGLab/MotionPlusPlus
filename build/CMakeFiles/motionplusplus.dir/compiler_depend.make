@@ -296,7 +296,40 @@ CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o: ../src/DeviceConnectio
   /usr/include/strings.h \
   /usr/include/c++/14/print \
   /usr/include/c++/14/utility \
-  /usr/include/c++/14/bits/stl_relops.h
+  /usr/include/c++/14/bits/stl_relops.h \
+  /usr/include/c++/14/unordered_map \
+  /usr/include/c++/14/bits/unordered_map.h \
+  /usr/include/c++/14/bits/hashtable.h \
+  /usr/include/c++/14/bits/hashtable_policy.h \
+  /usr/include/c++/14/bits/node_handle.h \
+  /usr/include/c++/14/bits/erase_if.h \
+  /usr/include/c++/14/memory \
+  /usr/include/c++/14/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/14/bits/shared_ptr_atomic.h \
+  /usr/include/c++/14/bits/atomic_base.h \
+  /usr/include/c++/14/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/14/bits/atomic_wait.h \
+  /usr/include/c++/14/climits \
+  /usr/lib/gcc/x86_64-linux-gnu/14/include/limits.h \
+  /usr/lib/gcc/x86_64-linux-gnu/14/include/syslimits.h \
+  /usr/include/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+  /usr/include/linux/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
+  /usr/include/syscall.h \
+  /usr/include/x86_64-linux-gnu/sys/syscall.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
+  /usr/include/x86_64-linux-gnu/bits/syscall.h \
+  /usr/include/c++/14/bits/std_mutex.h \
+  /usr/include/c++/14/backward/auto_ptr.h \
+  /usr/include/c++/14/bits/ranges_uninitialized.h \
+  /usr/include/c++/14/bits/out_ptr.h \
+  /usr/include/c++/14/pstl/glue_memory_defs.h \
+  /usr/include/c++/14/pstl/execution_defs.h
 
 CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o: ../src/DeviceManager.cpp \
   /usr/include/stdc-predef.h \
@@ -592,7 +625,40 @@ CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o: ../src/DeviceManager.cpp 
   /usr/include/strings.h \
   /usr/include/c++/14/print \
   /usr/include/c++/14/utility \
-  /usr/include/c++/14/bits/stl_relops.h
+  /usr/include/c++/14/bits/stl_relops.h \
+  /usr/include/c++/14/unordered_map \
+  /usr/include/c++/14/bits/unordered_map.h \
+  /usr/include/c++/14/bits/hashtable.h \
+  /usr/include/c++/14/bits/hashtable_policy.h \
+  /usr/include/c++/14/bits/node_handle.h \
+  /usr/include/c++/14/bits/erase_if.h \
+  /usr/include/c++/14/memory \
+  /usr/include/c++/14/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/14/bits/shared_ptr_atomic.h \
+  /usr/include/c++/14/bits/atomic_base.h \
+  /usr/include/c++/14/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/14/bits/atomic_wait.h \
+  /usr/include/c++/14/climits \
+  /usr/lib/gcc/x86_64-linux-gnu/14/include/limits.h \
+  /usr/lib/gcc/x86_64-linux-gnu/14/include/syslimits.h \
+  /usr/include/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+  /usr/include/linux/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
+  /usr/include/syscall.h \
+  /usr/include/x86_64-linux-gnu/sys/syscall.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
+  /usr/include/x86_64-linux-gnu/bits/syscall.h \
+  /usr/include/c++/14/bits/std_mutex.h \
+  /usr/include/c++/14/backward/auto_ptr.h \
+  /usr/include/c++/14/bits/ranges_uninitialized.h \
+  /usr/include/c++/14/bits/out_ptr.h \
+  /usr/include/c++/14/pstl/glue_memory_defs.h \
+  /usr/include/c++/14/pstl/execution_defs.h
 
 CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/stdc-predef.h \
@@ -889,12 +955,89 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/strings.h \
   /usr/include/c++/14/utility \
   /usr/include/c++/14/bits/stl_relops.h \
+  /usr/include/c++/14/unordered_map \
+  /usr/include/c++/14/bits/unordered_map.h \
+  /usr/include/c++/14/bits/hashtable.h \
+  /usr/include/c++/14/bits/hashtable_policy.h \
+  /usr/include/c++/14/bits/node_handle.h \
+  /usr/include/c++/14/bits/erase_if.h \
+  /usr/include/c++/14/memory \
+  /usr/include/c++/14/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/14/bits/shared_ptr_atomic.h \
+  /usr/include/c++/14/bits/atomic_base.h \
+  /usr/include/c++/14/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/14/bits/atomic_wait.h \
+  /usr/include/c++/14/climits \
+  /usr/lib/gcc/x86_64-linux-gnu/14/include/limits.h \
+  /usr/lib/gcc/x86_64-linux-gnu/14/include/syslimits.h \
+  /usr/include/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+  /usr/include/linux/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
+  /usr/include/syscall.h \
+  /usr/include/x86_64-linux-gnu/sys/syscall.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
+  /usr/include/x86_64-linux-gnu/bits/syscall.h \
+  /usr/include/c++/14/bits/std_mutex.h \
+  /usr/include/c++/14/backward/auto_ptr.h \
+  /usr/include/c++/14/bits/ranges_uninitialized.h \
+  /usr/include/c++/14/bits/out_ptr.h \
+  /usr/include/c++/14/pstl/glue_memory_defs.h \
+  /usr/include/c++/14/pstl/execution_defs.h \
   ../include/DeviceConnection.hpp
 
 
+../src/DeviceManager.cpp:
+
+/usr/include/c++/14/pstl/glue_memory_defs.h:
+
+/usr/include/c++/14/bits/out_ptr.h:
+
+/usr/include/c++/14/bits/ranges_uninitialized.h:
+
+/usr/include/c++/14/bits/std_mutex.h:
+
+/usr/include/x86_64-linux-gnu/asm/unistd.h:
+
+/usr/include/x86_64-linux-gnu/sys/syscall.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/limits.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/14/include/syslimits.h:
+
+/usr/include/c++/14/climits:
+
+/usr/include/c++/14/bits/atomic_wait.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/c++/14/bits/atomic_lockfree_defines.h:
+
 ../src/main.cpp:
 
-../src/DeviceManager.cpp:
+/usr/include/c++/14/bits/shared_ptr_atomic.h:
+
+/usr/include/c++/14/bits/stl_raw_storage_iter.h:
+
+/usr/include/c++/14/bits/erase_if.h:
+
+/usr/include/c++/14/bits/hashtable.h:
+
+/usr/include/c++/14/bits/unordered_map.h:
+
+/usr/include/c++/14/unordered_map:
 
 /usr/include/strings.h:
 
@@ -903,6 +1046,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/linux/close_range.h:
 
 /usr/include/x86_64-linux-gnu/bits/getopt_core.h:
+
+/usr/include/c++/14/bits/hashtable_policy.h:
 
 /usr/include/x86_64-linux-gnu/bits/confname.h:
 
@@ -929,6 +1074,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/x86_64-linux-gnu/bits/ioctl-types.h:
 
 /usr/include/x86_64-linux-gnu/asm/ioctl.h:
+
+/usr/include/c++/14/backward/auto_ptr.h:
 
 /usr/include/asm-generic/ioctls.h:
 
@@ -960,6 +1107,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/c++/14/bits/ranges_base.h:
 
+/usr/include/x86_64-linux-gnu/bits/syscall.h:
+
 /usr/include/c++/14/string_view:
 
 /usr/include/c++/14/bits/cxxabi_init_exception.h:
@@ -989,6 +1138,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/c++/14/ios:
 
 /usr/include/c++/14/ext/type_traits.h:
+
+/usr/include/x86_64-linux-gnu/asm/unistd_64.h:
 
 /usr/include/c++/14/pstl/pstl_config.h:
 
@@ -1058,6 +1209,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/c++/14/streambuf:
 
+/usr/include/c++/14/memory:
+
 /usr/include/c++/14/bits/stl_function.h:
 
 /usr/include/linux/input-event-codes.h:
@@ -1107,6 +1260,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/errno.h:
 
 /usr/include/c++/14/bits/version.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/14/include/limits.h:
 
 ../include/DeviceManager.hpp:
 
@@ -1164,6 +1319,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/c++/14/bits/chrono.h:
 
+/usr/include/c++/14/bits/node_handle.h:
+
 /usr/include/features.h:
 
 /usr/include/c++/14/bits/stl_heap.h:
@@ -1203,6 +1360,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/c++/14/bits/locale_conv.h:
 
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
+
+/usr/include/c++/14/bits/atomic_base.h:
 
 /usr/include/c++/14/optional:
 
@@ -1259,6 +1418,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/c++/14/bits/shared_ptr.h:
+
+/usr/include/c++/14/pstl/execution_defs.h:
 
 /usr/include/c++/14/utility:
 
@@ -1406,6 +1567,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/x86_64-linux-gnu/c++/14/bits/ctype_base.h:
 
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
 /usr/include/c++/14/bits/ios_base.h:
 
 /usr/include/c++/14/bits/ranges_cmp.h:
@@ -1483,6 +1646,8 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/lib/gcc/x86_64-linux-gnu/14/include/stddef.h:
 
 /usr/include/c++/14/bits/vector.tcc:
+
+/usr/include/syscall.h:
 
 /usr/include/x86_64-linux-gnu/sys/ioctl.h:
 

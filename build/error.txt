@@ -1,0 +1,2 @@
+Consolidate compiler generated dependencies of target motionplusplus
+[ 16%] Building CXX object CMakeFiles/motionplusplus.dir/src/main.cpp.o

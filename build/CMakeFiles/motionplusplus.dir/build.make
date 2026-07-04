@@ -111,11 +111,41 @@ CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.s"
 	g++-14 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivan/FGLab/MotionPlusPlus/src/DeviceConnection.cpp -o CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.s
 
+CMakeFiles/motionplusplus.dir/src/Controller.cpp.o: CMakeFiles/motionplusplus.dir/flags.make
+CMakeFiles/motionplusplus.dir/src/Controller.cpp.o: ../src/Controller.cpp
+CMakeFiles/motionplusplus.dir/src/Controller.cpp.o: CMakeFiles/motionplusplus.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/motionplusplus.dir/src/Controller.cpp.o"
+	g++-14 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/motionplusplus.dir/src/Controller.cpp.o -MF CMakeFiles/motionplusplus.dir/src/Controller.cpp.o.d -o CMakeFiles/motionplusplus.dir/src/Controller.cpp.o -c /home/ivan/FGLab/MotionPlusPlus/src/Controller.cpp
+
+CMakeFiles/motionplusplus.dir/src/Controller.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/motionplusplus.dir/src/Controller.cpp.i"
+	g++-14 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ivan/FGLab/MotionPlusPlus/src/Controller.cpp > CMakeFiles/motionplusplus.dir/src/Controller.cpp.i
+
+CMakeFiles/motionplusplus.dir/src/Controller.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/motionplusplus.dir/src/Controller.cpp.s"
+	g++-14 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivan/FGLab/MotionPlusPlus/src/Controller.cpp -o CMakeFiles/motionplusplus.dir/src/Controller.cpp.s
+
+CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o: CMakeFiles/motionplusplus.dir/flags.make
+CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o: ../src/WiiMote.cpp
+CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o: CMakeFiles/motionplusplus.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o"
+	g++-14 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o -MF CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o.d -o CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o -c /home/ivan/FGLab/MotionPlusPlus/src/WiiMote.cpp
+
+CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.i"
+	g++-14 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ivan/FGLab/MotionPlusPlus/src/WiiMote.cpp > CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.i
+
+CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.s"
+	g++-14 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivan/FGLab/MotionPlusPlus/src/WiiMote.cpp -o CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.s
+
 # Object files for target motionplusplus
 motionplusplus_OBJECTS = \
 "CMakeFiles/motionplusplus.dir/src/main.cpp.o" \
 "CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o" \
-"CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o"
+"CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o" \
+"CMakeFiles/motionplusplus.dir/src/Controller.cpp.o" \
+"CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o"
 
 # External object files for target motionplusplus
 motionplusplus_EXTERNAL_OBJECTS =
@@ -123,10 +153,12 @@ motionplusplus_EXTERNAL_OBJECTS =
 motionplusplus: CMakeFiles/motionplusplus.dir/src/main.cpp.o
 motionplusplus: CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o
 motionplusplus: CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o
+motionplusplus: CMakeFiles/motionplusplus.dir/src/Controller.cpp.o
+motionplusplus: CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o
 motionplusplus: CMakeFiles/motionplusplus.dir/build.make
 motionplusplus: /usr/lib/x86_64-linux-gnu/libevdev.so
 motionplusplus: CMakeFiles/motionplusplus.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable motionplusplus"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable motionplusplus"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/motionplusplus.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

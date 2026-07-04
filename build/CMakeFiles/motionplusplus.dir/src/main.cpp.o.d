@@ -257,4 +257,6 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: \
  /usr/include/c++/14/bits/out_ptr.h \
  /usr/include/c++/14/pstl/glue_memory_defs.h \
  /usr/include/c++/14/pstl/execution_defs.h \
- /home/ivan/FGLab/MotionPlusPlus/include/DeviceConnection.hpp
+ /home/ivan/FGLab/MotionPlusPlus/include/DeviceConnection.hpp \
+ /home/ivan/FGLab/MotionPlusPlus/include/WiiMote.hpp \
+ /home/ivan/FGLab/MotionPlusPlus/include/Controller.hpp

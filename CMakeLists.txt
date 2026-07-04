@@ -12,6 +12,8 @@ add_executable(motionplusplus
     src/main.cpp
     src/DeviceManager.cpp
     src/DeviceConnection.cpp
+    src/Controller.cpp
+    src/WiiMote.cpp
 )
 
 target_include_directories(motionplusplus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)

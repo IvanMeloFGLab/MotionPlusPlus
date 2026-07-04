@@ -1,6 +1,8 @@
-CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o: \
- /home/ivan/FGLab/MotionPlusPlus/src/DeviceManager.cpp \
+CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o: \
+ /home/ivan/FGLab/MotionPlusPlus/src/WiiMote.cpp \
  /usr/include/stdc-predef.h \
+ /home/ivan/FGLab/MotionPlusPlus/include/WiiMote.hpp \
+ /home/ivan/FGLab/MotionPlusPlus/include/Controller.hpp \
  /home/ivan/FGLab/MotionPlusPlus/include/DeviceManager.hpp \
  /usr/include/c++/14/filesystem \
  /usr/include/c++/14/bits/requires_hosted.h \
@@ -256,4 +258,5 @@ CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o: \
  /usr/include/c++/14/bits/ranges_uninitialized.h \
  /usr/include/c++/14/bits/out_ptr.h \
  /usr/include/c++/14/pstl/glue_memory_defs.h \
- /usr/include/c++/14/pstl/execution_defs.h
+ /usr/include/c++/14/pstl/execution_defs.h \
+ /home/ivan/FGLab/MotionPlusPlus/include/DeviceConnection.hpp

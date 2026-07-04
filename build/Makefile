@@ -129,6 +129,30 @@ motionplusplus/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/build
 .PHONY : motionplusplus/fast
 
+src/Controller.o: src/Controller.cpp.o
+.PHONY : src/Controller.o
+
+# target to build an object file
+src/Controller.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/Controller.cpp.o
+.PHONY : src/Controller.cpp.o
+
+src/Controller.i: src/Controller.cpp.i
+.PHONY : src/Controller.i
+
+# target to preprocess a source file
+src/Controller.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/Controller.cpp.i
+.PHONY : src/Controller.cpp.i
+
+src/Controller.s: src/Controller.cpp.s
+.PHONY : src/Controller.s
+
+# target to generate assembly for a file
+src/Controller.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/Controller.cpp.s
+.PHONY : src/Controller.cpp.s
+
 src/DeviceConnection.o: src/DeviceConnection.cpp.o
 .PHONY : src/DeviceConnection.o
 
@@ -177,6 +201,30 @@ src/DeviceManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.s
 .PHONY : src/DeviceManager.cpp.s
 
+src/WiiMote.o: src/WiiMote.cpp.o
+.PHONY : src/WiiMote.o
+
+# target to build an object file
+src/WiiMote.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o
+.PHONY : src/WiiMote.cpp.o
+
+src/WiiMote.i: src/WiiMote.cpp.i
+.PHONY : src/WiiMote.i
+
+# target to preprocess a source file
+src/WiiMote.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.i
+.PHONY : src/WiiMote.cpp.i
+
+src/WiiMote.s: src/WiiMote.cpp.s
+.PHONY : src/WiiMote.s
+
+# target to generate assembly for a file
+src/WiiMote.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.s
+.PHONY : src/WiiMote.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -210,12 +258,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... motionplusplus"
+	@echo "... src/Controller.o"
+	@echo "... src/Controller.i"
+	@echo "... src/Controller.s"
 	@echo "... src/DeviceConnection.o"
 	@echo "... src/DeviceConnection.i"
 	@echo "... src/DeviceConnection.s"
 	@echo "... src/DeviceManager.o"
 	@echo "... src/DeviceManager.i"
 	@echo "... src/DeviceManager.s"
+	@echo "... src/WiiMote.o"
+	@echo "... src/WiiMote.i"
+	@echo "... src/WiiMote.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

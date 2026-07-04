@@ -2,8 +2,15 @@
 #include <cerrno>
 #include "DeviceManager.hpp"
 #include "DeviceConnection.hpp"
+#include "WiiMote.hpp"
 
 using std::println;
+using std::vector;
+using std::unique_ptr;
+using std::string;
+using std::make_unique;
+using std::make_shared;
+using std::move;
 
 int main() {
 
@@ -29,23 +36,35 @@ int main() {
     println("{}", in_d);
   }
 
-  auto conn = DeviceConnection::connect((*input_devices)[15]);
+  auto groups = dm.groupByHid(*input_devices);
+
+  vector<unique_ptr<Controller>> ctrls;
+  int i = 1;
+
+  for (auto &grp : groups) {
+    if (grp.first.find("0005:057E:0306") != string::npos) { //Bluetooth:Nintendo:Wiimote
+      ctrls.emplace_back(make_unique<WiiMote>(make_shared<DeviceManager>(dm), i, move(grp.second)));
+      i++;
+    }
+  }
+
+  println("Found {} Wiimotes.", ctrls.size());
+
+  for (const auto &ctrl : ctrls) {
+    println("{}", *ctrl);
+  }
+
+  if (ctrls.size() == 0) return 1;
+
+  auto conn = ctrls[0]->connect();
 
   if (!conn) {
     println("Connection error: {}", conn.error().message());
     return 1;
   }
 
-  auto groups = dm.groupByHid(*input_devices);
-
-  for (const auto& [hid, vec] : groups) {
-    for (const auto &in_d : vec) {
-      println("Hid: {}, Dev: {}", hid, in_d->name);
-    }
-  }
-
   while (true) {
-    auto ev = conn->read();
+    auto ev = ctrls[0]->read(2);
     if (!ev) {
       if (ev.error().value() == EAGAIN) continue;
       println("Event error: {}", ev.error().message());
@@ -53,6 +72,11 @@ int main() {
     }
     println("Type: {}, Code: {}, Value: {}", ev->type, ev->code, ev->value);
   }
+
+  /*while (true) {
+    auto ev = conn->read();
+    ;
+  }*/
 
   return 0;
 }

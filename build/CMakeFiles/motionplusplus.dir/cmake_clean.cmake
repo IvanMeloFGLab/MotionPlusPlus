@@ -1,8 +1,12 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/motionplusplus.dir/src/Controller.cpp.o"
+  "CMakeFiles/motionplusplus.dir/src/Controller.cpp.o.d"
   "CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o"
   "CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o.d"
   "CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o"
   "CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o.d"
+  "CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o"
+  "CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o.d"
   "CMakeFiles/motionplusplus.dir/src/main.cpp.o"
   "CMakeFiles/motionplusplus.dir/src/main.cpp.o.d"
   "motionplusplus"

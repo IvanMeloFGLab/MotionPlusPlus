@@ -7,12 +7,20 @@
 #include <format>
 #include <expected>
 #include <libevdev/libevdev.h>
+#include <utility>
+#include <unordered_map>
 
 class Controller {
-public:
+protected:
   Controller(std::shared_ptr<DeviceManager> dm, int ctrl_id, std::vector<std::unique_ptr<InputDevice>> devs);
-  virtual ~Controller();
 
+public:
+  Controller(Controller&& other) = default;
+  Controller(const Controller&) = delete;
+  Controller& operator=(Controller&&) = delete;
+  virtual ~Controller() noexcept;
+
+  //virtual std::pair<std::vector<std::unique_ptr<Controller>>, int> discover(std::shared_ptr<DeviceManager> &dm, int &ctrl_id_off, std::unordered_map<std::string, std::vector<std::unique_ptr<InputDevice>>> &grps) = 0;
   std::expected<void, std::error_code> connect();
   std::expected<input_event, std::error_code> read(int dev_num);
 

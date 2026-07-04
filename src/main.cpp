@@ -38,7 +38,7 @@ int main() {
 
   auto groups = dm.groupByHid(*input_devices);
 
-  vector<unique_ptr<Controller>> ctrls;
+  /*vector<unique_ptr<Controller>> ctrls;
   int i = 1;
 
   for (auto &grp : groups) {
@@ -46,17 +46,19 @@ int main() {
       ctrls.emplace_back(make_unique<WiiMote>(make_shared<DeviceManager>(dm), i, move(grp.second)));
       i++;
     }
-  }
+  }*/
 
-  println("Found {} Wiimotes.", ctrls.size());
+  auto ctrls = WiiMote::discover(make_shared<DeviceManager>(dm), 1, groups);
 
-  for (const auto &ctrl : ctrls) {
+  println("Found {} Wiimotes.", ctrls.first.size());
+
+  for (const auto &ctrl : ctrls.first) {
     println("{}", *ctrl);
   }
 
-  if (ctrls.size() == 0) return 1;
+  if (ctrls.first.size() == 0) return 1;
 
-  auto conn = ctrls[0]->connect();
+  auto conn = ctrls.first[0]->connect();
 
   if (!conn) {
     println("Connection error: {}", conn.error().message());
@@ -64,7 +66,7 @@ int main() {
   }
 
   while (true) {
-    auto ev = ctrls[0]->read(2);
+    auto ev = ctrls.first[0]->read(2);
     if (!ev) {
       if (ev.error().value() == EAGAIN) continue;
       println("Event error: {}", ev.error().message());

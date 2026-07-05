@@ -3,6 +3,7 @@
 #include "DeviceManager.hpp"
 #include "DeviceConnection.hpp"
 #include "WiiMote.hpp"
+#include "ControllerManager.hpp"
 
 using std::println;
 using std::vector;
@@ -38,17 +39,12 @@ int main() {
 
   auto groups = dm.groupByHid(*input_devices);
 
-  /*vector<unique_ptr<Controller>> ctrls;
-  int i = 1;
-
-  for (auto &grp : groups) {
-    if (grp.first.find("0005:057E:0306") != string::npos) { //Bluetooth:Nintendo:Wiimote
-      ctrls.emplace_back(make_unique<WiiMote>(make_shared<DeviceManager>(dm), i, move(grp.second)));
-      i++;
-    }
-  }*/
-
   auto ctrls = WiiMote::discover(make_shared<DeviceManager>(dm), 1, groups);
+
+  if (ctrls.first.size() == 0) {
+    println("No controllers found.");
+    return 1;
+  }
 
   println("Found {} Wiimotes.", ctrls.first.size());
 
@@ -56,14 +52,16 @@ int main() {
     println("{}", *ctrl);
   }
 
-  if (ctrls.first.size() == 0) return 1;
+  ControllerManager cm(move(ctrls.first));
 
-  auto conn = ctrls.first[0]->connect();
+  auto conn = cm.connect();
 
   if (!conn) {
     println("Connection error: {}", conn.error().message());
     return 1;
   }
+
+  /*auto conn = ctrls.first[0]->connect();
 
   while (true) {
     auto ev = ctrls.first[0]->read(2);
@@ -73,7 +71,7 @@ int main() {
       return 1;
     }
     println("Type: {}, Code: {}, Value: {}", ev->type, ev->code, ev->value);
-  }
+  }*/
 
   /*while (true) {
     auto ev = conn->read();

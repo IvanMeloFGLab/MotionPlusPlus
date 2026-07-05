@@ -153,6 +153,30 @@ src/Controller.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/Controller.cpp.s
 .PHONY : src/Controller.cpp.s
 
+src/ControllerManager.o: src/ControllerManager.cpp.o
+.PHONY : src/ControllerManager.o
+
+# target to build an object file
+src/ControllerManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/ControllerManager.cpp.o
+.PHONY : src/ControllerManager.cpp.o
+
+src/ControllerManager.i: src/ControllerManager.cpp.i
+.PHONY : src/ControllerManager.i
+
+# target to preprocess a source file
+src/ControllerManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/ControllerManager.cpp.i
+.PHONY : src/ControllerManager.cpp.i
+
+src/ControllerManager.s: src/ControllerManager.cpp.s
+.PHONY : src/ControllerManager.s
+
+# target to generate assembly for a file
+src/ControllerManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/src/ControllerManager.cpp.s
+.PHONY : src/ControllerManager.cpp.s
+
 src/DeviceConnection.o: src/DeviceConnection.cpp.o
 .PHONY : src/DeviceConnection.o
 
@@ -261,6 +285,9 @@ help:
 	@echo "... src/Controller.o"
 	@echo "... src/Controller.i"
 	@echo "... src/Controller.s"
+	@echo "... src/ControllerManager.o"
+	@echo "... src/ControllerManager.i"
+	@echo "... src/ControllerManager.s"
 	@echo "... src/DeviceConnection.o"
 	@echo "... src/DeviceConnection.i"
 	@echo "... src/DeviceConnection.s"

@@ -30,7 +30,7 @@ template<>
 struct std::formatter<InputDevice> : std::formatter<std::string> {
   auto format(const InputDevice &id, format_context &ctx) const {
     return std::formatter<std::string>::format(std::format("Name: {}, Vendor: {}, Product: {}, Bus: {}, Phys: {}, Uniq: {}, hid: {}",
-                                                 id.name, id.vendor, id.product, id.bus, id.phys, id.uniq, id.hid), ctx);
+                                                          id.name, id.vendor, id.product, id.bus, id.phys, id.uniq, id.hid), ctx);
   }
 };
 

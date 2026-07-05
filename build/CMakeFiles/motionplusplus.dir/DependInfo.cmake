@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/ivan/FGLab/MotionPlusPlus/src/Controller.cpp" "CMakeFiles/motionplusplus.dir/src/Controller.cpp.o" "gcc" "CMakeFiles/motionplusplus.dir/src/Controller.cpp.o.d"
+  "/home/ivan/FGLab/MotionPlusPlus/src/ControllerManager.cpp" "CMakeFiles/motionplusplus.dir/src/ControllerManager.cpp.o" "gcc" "CMakeFiles/motionplusplus.dir/src/ControllerManager.cpp.o.d"
   "/home/ivan/FGLab/MotionPlusPlus/src/DeviceConnection.cpp" "CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o" "gcc" "CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o.d"
   "/home/ivan/FGLab/MotionPlusPlus/src/DeviceManager.cpp" "CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o" "gcc" "CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o.d"
   "/home/ivan/FGLab/MotionPlusPlus/src/WiiMote.cpp" "CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o" "gcc" "CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o.d"

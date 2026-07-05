@@ -81,12 +81,12 @@ clean: CMakeFiles/motionplusplus.dir/clean
 CMakeFiles/motionplusplus.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/motionplusplus.dir/build.make CMakeFiles/motionplusplus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target motionplusplus"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target motionplusplus"
 .PHONY : CMakeFiles/motionplusplus.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/motionplusplus.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/motionplusplus.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ivan/FGLab/MotionPlusPlus/build/CMakeFiles 0
 .PHONY : CMakeFiles/motionplusplus.dir/rule

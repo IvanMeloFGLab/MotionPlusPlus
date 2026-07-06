@@ -19,8 +19,10 @@ public:
   ~DeviceConnection() noexcept;
 
   static std::expected<DeviceConnection, std::error_code> connect(const InputDevice &device);
-
   std::expected<input_event, std::error_code> read();
+
+  int getFd();
+  const std::string getDeviceName();
 
 private:
   const InputDevice& device_;

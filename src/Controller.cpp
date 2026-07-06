@@ -33,9 +33,11 @@ expected<void, error_code> Controller::connect() {
 
 expected<input_event, error_code> Controller::read(int dev_num) {
   if (!connected_) return unexpected(error_code(ENOTCONN, generic_category()));
-  if (conns_.size() >= static_cast<size_t>(dev_num)) {
-    return conns_[dev_num].read();
+
+  for (auto &conn : conns_) {
+    if (conn.getFd() == dev_num) return conn.read();
   }
+
   return unexpected(error_code(ENODEV, generic_category()));
 }
 
@@ -54,3 +56,27 @@ int Controller::getId() const {
 string Controller::getHid() const {
   return hid_;
 }
+
+vector<int> Controller::getFds() {
+  vector<int> fds;
+  for (auto &conn : conns_) {
+    fds.push_back(conn.getFd());
+  }
+  return fds;
+}
+
+bool Controller::isConnected() {
+  return connected_;
+}
+
+bool Controller::isFdFromCtrl(int &fd) {
+  for (auto &conn : conns_) {
+    if (conn.getFd() == fd) return true;
+  }
+  return false;
+}
+
+std::string Controller::getType() const {
+  return type_;
+}
+

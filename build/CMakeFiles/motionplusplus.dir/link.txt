@@ -1,1 +1,0 @@
-g++-14 CMakeFiles/motionplusplus.dir/src/main.cpp.o CMakeFiles/motionplusplus.dir/src/DeviceManager.cpp.o CMakeFiles/motionplusplus.dir/src/DeviceConnection.cpp.o CMakeFiles/motionplusplus.dir/src/Controller.cpp.o CMakeFiles/motionplusplus.dir/src/WiiMote.cpp.o -o motionplusplus  /usr/lib/x86_64-linux-gnu/libevdev.so 

@@ -1,62 +1,26 @@
 #include <print>
-#include <cerrno>
-#include "DeviceManager.hpp"
-#include "DeviceConnection.hpp"
+#include <chrono>
 #include "WiiMote.hpp"
+#include "ControllerManager.hpp"
 
 using std::println;
-using std::vector;
-using std::unique_ptr;
-using std::string;
-using std::make_unique;
-using std::make_shared;
-using std::move;
+
+using namespace std::chrono_literals;
 
 int main() {
+  ControllerManager cm;
 
-  DeviceManager dm;
-
-  println("MotionPlusPlus running...");
-
-  auto input_devices = dm.scan();
-
-  if (!input_devices) {
-    println("Scanning error: {}", input_devices.error().message());
+  auto scn = cm.scan();
+  if (!scn) {
+    println("Scanning error: {}", scn.error().message());
     return 1;
   }
 
-  auto res = dm.populateMetadata(*input_devices);
-
-  if (!res) {
-    println("Populating metadata error: {}. From {} device.", res.error().first.message(), res.error().second);
-    return 1;
+  for (const auto &ctrl : *scn) {
+    println("{}", *(cm.getController(ctrl.first)));
   }
 
-  for (auto &in_d : *input_devices) {
-    println("{}", in_d);
-  }
-
-  auto groups = dm.groupByHid(*input_devices);
-
-  vector<unique_ptr<Controller>> ctrls;
-  int i = 1;
-
-  for (auto &grp : groups) {
-    if (grp.first.find("0005:057E:0306") != string::npos) { //Bluetooth:Nintendo:Wiimote
-      ctrls.emplace_back(make_unique<WiiMote>(make_shared<DeviceManager>(dm), i, move(grp.second)));
-      i++;
-    }
-  }
-
-  println("Found {} Wiimotes.", ctrls.size());
-
-  for (const auto &ctrl : ctrls) {
-    println("{}", *ctrl);
-  }
-
-  if (ctrls.size() == 0) return 1;
-
-  auto conn = ctrls[0]->connect();
+  auto conn = cm.connect();
 
   if (!conn) {
     println("Connection error: {}", conn.error().message());
@@ -64,19 +28,21 @@ int main() {
   }
 
   while (true) {
-    auto ev = ctrls[0]->read(2);
-    if (!ev) {
-      if (ev.error().value() == EAGAIN) continue;
-      println("Event error: {}", ev.error().message());
+    auto up = cm.update(10ms);
+
+    if (!up) {
+      if (up.error().value() == EAGAIN) continue;
+      println("Update error: {}", up.error().message());
       return 1;
     }
-    println("Type: {}, Code: {}, Value: {}", ev->type, ev->code, ev->value);
-  }
 
-  /*while (true) {
-    auto ev = conn->read();
-    ;
-  }*/
+    auto wm = dynamic_cast<WiiMote*>(cm.getController(1));
+    auto wm2 = dynamic_cast<WiiMote*>(cm.getController(2));
+    if (wm && wm2) {
+      println("A button {} 1: {}, {} 2: {}", wm->getType(), wm->getButtons().a, wm2->getType(), wm2->getButtons().a);
+    }
+
+  }
 
   return 0;
 }

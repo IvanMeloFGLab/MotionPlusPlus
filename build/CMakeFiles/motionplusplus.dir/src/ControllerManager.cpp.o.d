@@ -259,4 +259,7 @@ CMakeFiles/motionplusplus.dir/src/ControllerManager.cpp.o: \
  /usr/include/c++/14/bits/out_ptr.h \
  /usr/include/c++/14/pstl/glue_memory_defs.h \
  /usr/include/c++/14/pstl/execution_defs.h \
- /home/ivan/FGLab/MotionPlusPlus/include/DeviceConnection.hpp
+ /home/ivan/FGLab/MotionPlusPlus/include/DeviceConnection.hpp \
+ /usr/include/c++/14/chrono /usr/include/c++/14/bits/chrono_io.h \
+ /usr/include/poll.h /usr/include/x86_64-linux-gnu/sys/poll.h \
+ /usr/include/x86_64-linux-gnu/bits/poll.h /usr/include/c++/14/print

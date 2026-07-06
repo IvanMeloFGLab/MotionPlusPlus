@@ -28,6 +28,11 @@ public:
   int getId() const;
   std::string getHid() const;
 
+  std::vector<int> getFds();
+
+  bool isConnected();
+  bool isFdFromCtrl(int &fd);
+
 private:
 
 protected:

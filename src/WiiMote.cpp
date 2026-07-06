@@ -21,14 +21,14 @@ WiiMote::~WiiMote() {
 
 }
 
-pair<vector<unique_ptr<Controller>>, int> WiiMote::discover(shared_ptr<DeviceManager> dm, int ctrl_id_off,
+pair<unordered_map<int, unique_ptr<Controller>>, int> WiiMote::discover(shared_ptr<DeviceManager> dm, int ctrl_id_off,
                                                          unordered_map<string, vector<unique_ptr<InputDevice>>> &grps) {
-  vector<unique_ptr<Controller>> ctrls;
+  unordered_map<int, unique_ptr<Controller>> ctrls;
   int i = ctrl_id_off;
 
   for (auto &grp : grps) {
     if (grp.first.find("0005:057E:0306") != string::npos) { //Bluetooth:Nintendo:Wiimote
-      ctrls.emplace_back(unique_ptr<WiiMote>(new WiiMote(dm, i, move(grp.second))));
+      ctrls.emplace(i, unique_ptr<WiiMote>(new WiiMote(dm, i, move(grp.second))));
       i++;
     }
   }

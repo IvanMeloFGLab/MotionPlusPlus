@@ -11,7 +11,7 @@ private:
   WiiMote(std::shared_ptr<DeviceManager> dm, int ctrl_id, std::vector<std::unique_ptr<InputDevice>> devs);
 
 public:
-  static std::pair<std::vector<std::unique_ptr<Controller>>, int> discover(std::shared_ptr<DeviceManager> dm, int ctrl_id_off, std::unordered_map<std::string, std::vector<std::unique_ptr<InputDevice>>> &grps);
+  static std::pair<std::unordered_map<int, std::unique_ptr<Controller>>, int> discover(std::shared_ptr<DeviceManager> dm, int ctrl_id_off, std::unordered_map<std::string, std::vector<std::unique_ptr<InputDevice>>> &grps);
 
   WiiMote(WiiMote&& other);
   WiiMote(const WiiMote&) = delete;

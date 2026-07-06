@@ -171,31 +171,31 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: \
  /usr/include/c++/14/bits/stl_heap.h \
  /usr/include/c++/14/bits/uniform_int_dist.h \
  /usr/include/c++/14/bits/stl_tempbuf.h \
- /usr/include/c++/14/bits/unicode-data.h \
- /home/ivan/FGLab/MotionPlusPlus/include/DeviceManager.hpp \
- /usr/include/c++/14/filesystem /usr/include/c++/14/bits/fs_fwd.h \
+ /usr/include/c++/14/bits/unicode-data.h /usr/include/c++/14/chrono \
  /usr/include/c++/14/bits/chrono.h /usr/include/c++/14/ratio \
- /usr/include/c++/14/bits/fs_path.h /usr/include/c++/14/iomanip \
- /usr/include/c++/14/bits/quoted_string.h /usr/include/c++/14/sstream \
- /usr/include/c++/14/istream /usr/include/c++/14/ios \
- /usr/include/c++/14/bits/basic_ios.h \
+ /usr/include/c++/14/sstream /usr/include/c++/14/istream \
+ /usr/include/c++/14/ios /usr/include/c++/14/bits/basic_ios.h \
  /usr/include/c++/14/bits/basic_ios.tcc /usr/include/c++/14/ostream \
  /usr/include/c++/14/bits/ostream.tcc \
  /usr/include/c++/14/bits/istream.tcc \
- /usr/include/c++/14/bits/sstream.tcc /usr/include/c++/14/codecvt \
- /usr/include/c++/14/ext/concurrence.h \
+ /usr/include/c++/14/bits/sstream.tcc /usr/include/c++/14/vector \
+ /usr/include/c++/14/bits/stl_uninitialized.h \
+ /usr/include/c++/14/bits/stl_vector.h \
+ /usr/include/c++/14/bits/stl_bvector.h \
+ /usr/include/c++/14/bits/vector.tcc \
  /usr/include/c++/14/bits/shared_ptr.h \
  /usr/include/c++/14/bits/shared_ptr_base.h \
  /usr/include/c++/14/bits/allocated_ptr.h \
  /usr/include/c++/14/bits/unique_ptr.h \
  /usr/include/c++/14/ext/aligned_buffer.h \
- /usr/include/c++/14/bits/align.h \
- /usr/include/c++/14/bits/stl_uninitialized.h \
+ /usr/include/c++/14/ext/concurrence.h /usr/include/c++/14/bits/align.h \
+ /usr/include/c++/14/bits/chrono_io.h /usr/include/c++/14/iomanip \
+ /usr/include/c++/14/bits/quoted_string.h \
+ /home/ivan/FGLab/MotionPlusPlus/include/DeviceManager.hpp \
+ /usr/include/c++/14/filesystem /usr/include/c++/14/bits/fs_fwd.h \
+ /usr/include/c++/14/bits/fs_path.h /usr/include/c++/14/codecvt \
  /usr/include/c++/14/bits/fs_dir.h /usr/include/c++/14/bits/fs_ops.h \
- /usr/include/c++/14/expected /usr/include/c++/14/vector \
- /usr/include/c++/14/bits/stl_vector.h \
- /usr/include/c++/14/bits/stl_bvector.h \
- /usr/include/c++/14/bits/vector.tcc \
+ /usr/include/c++/14/expected \
  /usr/include/libevdev-1.0/libevdev/libevdev.h /usr/include/linux/input.h \
  /usr/include/x86_64-linux-gnu/sys/time.h \
  /usr/include/x86_64-linux-gnu/sys/ioctl.h \
@@ -260,4 +260,6 @@ CMakeFiles/motionplusplus.dir/src/main.cpp.o: \
  /home/ivan/FGLab/MotionPlusPlus/include/DeviceConnection.hpp \
  /home/ivan/FGLab/MotionPlusPlus/include/WiiMote.hpp \
  /home/ivan/FGLab/MotionPlusPlus/include/Controller.hpp \
- /home/ivan/FGLab/MotionPlusPlus/include/ControllerManager.hpp
+ /home/ivan/FGLab/MotionPlusPlus/include/ControllerManager.hpp \
+ /usr/include/poll.h /usr/include/x86_64-linux-gnu/sys/poll.h \
+ /usr/include/x86_64-linux-gnu/bits/poll.h

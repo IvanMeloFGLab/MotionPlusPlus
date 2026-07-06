@@ -22,7 +22,7 @@ DeviceConnection::~DeviceConnection() {
 }
 
 expected<DeviceConnection, error_code> DeviceConnection::connect(const InputDevice &device) {
-  int fd = open(device.path.string().c_str(), O_RDONLY);
+  int fd = open(device.path.string().c_str(), O_RDONLY | O_NONBLOCK);
 
   if (fd < 0) return unexpected(error_code(errno, generic_category()));
 
@@ -54,5 +54,8 @@ expected<input_event, error_code> DeviceConnection::read() {
   } else {
     return unexpected(error_code(-rc, generic_category()));
   }
+}
 
+int DeviceConnection::getFd() {
+  return fd_;
 }

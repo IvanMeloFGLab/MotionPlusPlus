@@ -1,5 +1,6 @@
 #include <print>
 #include <cerrno>
+#include <chrono>
 #include "DeviceManager.hpp"
 #include "DeviceConnection.hpp"
 #include "WiiMote.hpp"
@@ -12,6 +13,8 @@ using std::string;
 using std::make_unique;
 using std::make_shared;
 using std::move;
+
+using namespace std::chrono_literals;
 
 int main() {
 
@@ -49,7 +52,7 @@ int main() {
   println("Found {} Wiimotes.", ctrls.first.size());
 
   for (const auto &ctrl : ctrls.first) {
-    println("{}", *ctrl);
+    println("{}", *ctrl.second);
   }
 
   ControllerManager cm(move(ctrls.first));
@@ -59,6 +62,16 @@ int main() {
   if (!conn) {
     println("Connection error: {}", conn.error().message());
     return 1;
+  }
+
+  while (true) {
+    auto up = cm.update(16ms);
+
+    if (!up) {
+      if (up.error().value() == EAGAIN) continue;
+      println("Update error: {}", up.error().message());
+      return 1;
+    }
   }
 
   /*auto conn = ctrls.first[0]->connect();

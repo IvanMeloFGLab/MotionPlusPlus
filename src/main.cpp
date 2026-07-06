@@ -49,7 +49,7 @@ int main() {
     return 1;
   }
 
-  println("Found {} Wiimotes.", ctrls.first.size());
+  println("Found {} controllers.", ctrls.first.size());
 
   for (const auto &ctrl : ctrls.first) {
     println("{}", *ctrl.second);
@@ -65,7 +65,12 @@ int main() {
   }
 
   while (true) {
-    auto up = cm.update(16ms);
+    auto up = cm.update(10ms);
+
+    auto wm = dynamic_cast<WiiMote*>(cm.ctrls_[1].get());
+    if (wm) {
+      println("A value: {}", wm->btns_.a);
+    }
 
     if (!up) {
       if (up.error().value() == EAGAIN) continue;
@@ -73,23 +78,6 @@ int main() {
       return 1;
     }
   }
-
-  /*auto conn = ctrls.first[0]->connect();
-
-  while (true) {
-    auto ev = ctrls.first[0]->read(2);
-    if (!ev) {
-      if (ev.error().value() == EAGAIN) continue;
-      println("Event error: {}", ev.error().message());
-      return 1;
-    }
-    println("Type: {}, Code: {}, Value: {}", ev->type, ev->code, ev->value);
-  }*/
-
-  /*while (true) {
-    auto ev = conn->read();
-    ;
-  }*/
 
   return 0;
 }

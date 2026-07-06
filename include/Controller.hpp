@@ -23,6 +23,7 @@ public:
   //virtual std::pair<std::vector<std::unique_ptr<Controller>>, int> discover(std::shared_ptr<DeviceManager> &dm, int &ctrl_id_off, std::unordered_map<std::string, std::vector<std::unique_ptr<InputDevice>>> &grps) = 0;
   std::expected<void, std::error_code> connect();
   std::expected<input_event, std::error_code> read(int dev_num);
+  virtual void update(int fd, input_event ev) = 0;
 
   std::vector<std::string> getDevicesNames() const;
   int getId() const;

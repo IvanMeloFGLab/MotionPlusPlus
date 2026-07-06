@@ -9,8 +9,6 @@
 #include <cerrno>
 #include <unordered_map>
 
-#include <print>
-
 class ControllerManager {
 public:
   ControllerManager(std::unordered_map<int, std::unique_ptr<Controller>> ctrls);
@@ -19,9 +17,10 @@ public:
   std::expected<void, std::error_code> connect();
   std::expected<void, std::error_code> update(std::chrono::milliseconds timeout);
 
+  std::unordered_map<int, std::unique_ptr<Controller>> ctrls_;
+
 private:
   std::expected<void, std::error_code> updateFds();
 
-  std::unordered_map<int, std::unique_ptr<Controller>> ctrls_;
   std::vector<pollfd> fds_;
 };

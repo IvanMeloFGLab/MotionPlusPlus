@@ -10,8 +10,6 @@ using std::unexpected;
 using std::generic_category;
 using std::unordered_map;
 
-using std::println;
-
 using milis = std::chrono::milliseconds;
 
 ControllerManager::ControllerManager(unordered_map<int, unique_ptr<Controller>> ctrls) : ctrls_(move(ctrls)) {
@@ -34,7 +32,6 @@ expected<void, error_code> ControllerManager::update(milis timeout) {
   int ret = poll(fds_.data(), fds_.size(), timeout.count());
   if (ret < 0) return unexpected(error_code(errno, generic_category()));
 
-  println("--------------------------------------------------------------------------");
   for (auto &fd : fds_) {
     it_ctrls {
       if (ctrl.second->isFdFromCtrl(fd.fd)) {
@@ -46,8 +43,7 @@ expected<void, error_code> ControllerManager::update(milis timeout) {
             return unexpected(ev.error());
           }
 
-          println("conn[{}] Type: {} Code: {} Value: {}", fd.fd, ev->type, ev->code, ev->value);
-
+          ctrl.second->update(fd.fd, *ev);
           continue;
         }
 

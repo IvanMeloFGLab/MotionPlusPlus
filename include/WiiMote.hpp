@@ -3,8 +3,12 @@
 #include "Controller.hpp"
 #include <vector>
 #include <memory>
+#include <chrono>
 #include <utility>
 #include <unordered_map>
+#include <thread>
+#include <algorithm>
+#include <cmath>
 
 struct Buttons {
   bool a;
@@ -58,6 +62,9 @@ public:
   ~WiiMote();
 
   void update(int fd, input_event ev) override;
+  std::expected<void, std::error_code> rumble(int intensity, std::chrono::milliseconds time);
+  std::expected<void, std::error_code> rumbleSine(int intensity, std::chrono::milliseconds time, double freq);
+  std::expected<void, std::error_code> rumbleCosine(int intensity, std::chrono::milliseconds time, double freq);
 
   const Buttons getButtons() const;
   const Accelerometer getAccel() const;

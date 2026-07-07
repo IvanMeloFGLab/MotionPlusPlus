@@ -20,6 +20,9 @@ public:
 
   static std::expected<DeviceConnection, std::error_code> connect(const InputDevice &device);
   std::expected<input_event, std::error_code> read();
+  std::expected<int, std::error_code> uploadEffect(ff_effect &effect);
+  std::expected<void, std::error_code> playEffect(int effect_id);
+  std::expected<void, std::error_code> stopEffect(int effect_id);
 
   int getFd();
   const std::string getDeviceName();

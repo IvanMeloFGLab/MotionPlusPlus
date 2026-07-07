@@ -12,6 +12,16 @@ using std::expected;
 using std::unexpected;
 using std::error_code;
 using std::generic_category;
+using std::thread;
+using std::this_thread::sleep_for;
+using std::chrono::steady_clock;
+using std::chrono::duration;
+using std::max;
+using std::min;
+using std::sin;
+using std::cos;
+
+using milis = std::chrono::milliseconds;
 
 WiiMote::WiiMote(shared_ptr<DeviceManager> dm, int ctrl_id, vector<std::unique_ptr<InputDevice>> devs) : Controller(dm, ctrl_id, move(devs)) {
   type_ = "Wiimote";
@@ -141,6 +151,123 @@ void WiiMote::update(int fd, input_event ev) {
       }
     }
   }
+}
+
+expected<void, error_code> WiiMote::rumble(int intensity, milis time) {
+  ff_effect effect{};
+  effect.type = FF_RUMBLE;
+  effect.id = -1;                               // kernel assigns id
+  effect.u.rumble.strong_magnitude = 0xFFFF;    // 0-100 → 0-0xFFFF
+  effect.u.rumble.weak_magnitude   = 0xFFFF;
+  effect.replay.length = time.count();
+  effect.replay.delay = 0;
+
+  for (auto &conn : conns_) {
+    if (conn.getDeviceName() == "Nintendo Wii Remote") {
+      auto id = conn.uploadEffect(effect);
+      if (!id) return unexpected(id.error());
+
+      auto play = conn.playEffect(*id);
+      if (!play) return unexpected(play.error());
+
+      thread([conn = &conn, id = *id, time, intensity = min(intensity, 100)]() {
+        auto end = steady_clock::now() + time;
+        int on_time  = 25 + (intensity * 75 / 100);           // ms on
+        int off_time = 100 - on_time;               // ms off
+        while (steady_clock::now() < end) {
+          conn->playEffect(id);
+          sleep_for(milis(on_time));
+          conn->stopEffect(id);
+          sleep_for(milis(off_time));
+        }
+        conn->stopEffect(id);
+      }).detach();
+    }
+  }
+
+  return {};
+}
+
+expected<void, error_code> WiiMote::rumbleSine(int intensity, milis time, double freq) {
+  ff_effect effect{};
+  effect.type = FF_RUMBLE;
+  effect.id = -1;                               // kernel assigns id
+  effect.u.rumble.strong_magnitude = 0xFFFF;    // 0-100 → 0-0xFFFF
+  effect.u.rumble.weak_magnitude   = 0xFFFF;
+  effect.replay.length = time.count();
+  effect.replay.delay = 0;
+
+  for (auto &conn : conns_) {
+    if (conn.getDeviceName() == "Nintendo Wii Remote") {
+      auto id = conn.uploadEffect(effect);
+      if (!id) return unexpected(id.error());
+
+      auto play = conn.playEffect(*id);
+      if (!play) return unexpected(play.error());
+
+      thread([conn = &conn, id = *id, time, intensity = min(intensity, 100), freq]() {
+        auto end = steady_clock::now() + time;
+        auto start = steady_clock::now();
+
+        while (steady_clock::now() < end) {
+          auto elapsed = duration<double>(steady_clock::now() - start).count();
+          double sine = (sin(elapsed * freq * 2 * M_PI) + 1.0) / 2.0;
+
+          int on_time = 20 + (sine * intensity * 80 / 100);
+          int off_time = 100 - on_time;
+
+          conn->playEffect(id);
+          sleep_for(milis(on_time));
+          conn->stopEffect(id);
+          sleep_for(milis(off_time));
+        }
+        conn->stopEffect(id);
+      }).detach();
+    }
+  }
+
+  return {};
+}
+
+expected<void, error_code> WiiMote::rumbleCosine(int intensity, milis time, double freq) {
+  ff_effect effect{};
+  effect.type = FF_RUMBLE;
+  effect.id = -1;                               // kernel assigns id
+  effect.u.rumble.strong_magnitude = 0xFFFF;    // 0-100 → 0-0xFFFF
+  effect.u.rumble.weak_magnitude   = 0xFFFF;
+  effect.replay.length = time.count();
+  effect.replay.delay = 0;
+
+  for (auto &conn : conns_) {
+    if (conn.getDeviceName() == "Nintendo Wii Remote") {
+      auto id = conn.uploadEffect(effect);
+      if (!id) return unexpected(id.error());
+
+      auto play = conn.playEffect(*id);
+      if (!play) return unexpected(play.error());
+
+      thread([conn = &conn, id = *id, time, intensity = min(intensity, 100), freq]() {
+        auto end = steady_clock::now() + time;
+        auto start = steady_clock::now();
+
+        while (steady_clock::now() < end) {
+          auto elapsed = duration<double>(steady_clock::now() - start).count();
+          double cosine = (cos(elapsed * freq * 2 * M_PI) + 1.0) / 2.0;
+
+          int on_time = 20 + (cosine * intensity * 80 / 100);
+          int off_time = 100 - on_time;
+
+          conn->playEffect(id);
+          sleep_for(milis(on_time));
+          conn->stopEffect(id);
+          sleep_for(milis(off_time));
+        }
+        conn->stopEffect(id);
+      }).detach();
+    }
+  }
+
+  return {};
 }
 
 const Buttons WiiMote::getButtons() const {

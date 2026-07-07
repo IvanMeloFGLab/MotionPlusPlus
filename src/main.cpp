@@ -27,6 +27,12 @@ int main() {
     return 1;
   }
 
+  auto wm = dynamic_cast<WiiMote*>(cm.getController(1));
+  auto wm2 = dynamic_cast<WiiMote*>(cm.getController(2));
+
+  wm->rumbleSine(40, 3000ms, 1.5);
+  wm2->rumbleCosine(40, 3000ms, 1.5);
+
   while (true) {
     auto up = cm.update(10ms);
 
@@ -36,11 +42,12 @@ int main() {
       return 1;
     }
 
-    auto wm = dynamic_cast<WiiMote*>(cm.getController(1));
-    auto wm2 = dynamic_cast<WiiMote*>(cm.getController(2));
-    if (wm && wm2) {
+    //auto wm = dynamic_cast<WiiMote*>(cm.getController(1));
+    //auto wm2 = dynamic_cast<WiiMote*>(cm.getController(2));
+
+    /*if (wm && wm2) {
       println("A button {} 1: {}, {} 2: {}", wm->getType(), wm->getButtons().a, wm2->getType(), wm2->getButtons().a);
-    }
+    }*/
 
   }
 

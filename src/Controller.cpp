@@ -23,9 +23,15 @@ Controller::~Controller() {
 
 expected<void, error_code> Controller::connect() {
   for (auto &dev : devs_) {
-    auto conn = DeviceConnection::connect(*dev);
-    if (!conn) return unexpected(conn.error());
-    conns_.emplace_back(move(*conn));
+    bool skip = false;
+    for (auto &conn : conns_) {
+      if (dev->name == conn.getDeviceName()) { skip = true; break; }
+    }
+    if (!skip) {
+      auto conn = DeviceConnection::connect(*dev);
+      if (!conn) return unexpected(conn.error());
+      conns_.emplace_back(move(*conn));
+    }
   }
   connected_ = true;
   return {};
@@ -39,6 +45,22 @@ expected<input_event, error_code> Controller::read(int dev_num) {
   }
 
   return unexpected(error_code(ENODEV, generic_category()));
+}
+
+void Controller::removeDeviceFor(const DeviceConnection& conn) {
+  devs_.erase(std::remove_if(devs_.begin(), devs_.end(), [&](const unique_ptr<InputDevice>& d) {
+    return d.get() == &conn.getDevice();
+  }), devs_.end());
+}
+
+void Controller::addDevices(vector<unique_ptr<InputDevice>> devs) {
+  for (auto &dev : devs) {
+    bool exists = false;
+    for (auto &existing : devs_) {
+      if (existing->path == dev->path) { exists = true; break; }
+    }
+    if (!exists) devs_.push_back(std::move(dev));
+  }
 }
 
 vector<string> Controller::getDevicesNames() const {
@@ -76,6 +98,10 @@ vector<int> Controller::getFds() {
     fds.push_back(conn.getFd());
   }
   return fds;
+}
+
+void Controller::setConnected(bool conn) {
+  connected_ = conn;
 }
 
 bool Controller::isConnected() {

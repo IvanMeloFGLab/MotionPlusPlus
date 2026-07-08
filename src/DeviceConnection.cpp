@@ -87,4 +87,6 @@ const string DeviceConnection::getDeviceName() {
   return device_.name;
 }
 
-
+const InputDevice &DeviceConnection::getDevice() const {
+  return device_;
+}

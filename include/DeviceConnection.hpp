@@ -26,9 +26,11 @@ public:
 
   int getFd();
   const std::string getDeviceName();
+  const InputDevice &getDevice() const;
 
 private:
   const InputDevice& device_;
   int fd_;
   libevdev *dev_;
+  bool connected_;
 };

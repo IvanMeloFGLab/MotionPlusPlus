@@ -3,6 +3,7 @@
 #include "DeviceManager.hpp"
 #include "DeviceConnection.hpp"
 #include <vector>
+#include <list>
 #include <memory>
 #include <format>
 #include <expected>
@@ -26,14 +27,20 @@ public:
   std::expected<input_event, std::error_code> read(int dev_num);
   virtual void update(int fd, input_event ev) = 0;
 
+  virtual bool onLostFd(int fd) = 0;
+  void removeDeviceFor(const DeviceConnection& conn);
+
+  void addDevices(std::vector<std::unique_ptr<InputDevice>> devs);
+
   std::vector<std::string> getDevicesNames() const;
   int getId() const;
   std::string getHid() const;
   std::expected<std::string, std::error_code> getMac() const;
   std::string getType() const;
   virtual std::expected<int, std::error_code> getBatPer() const = 0;
-
   std::vector<int> getFds();
+
+  void setConnected(bool conn);
 
   bool isConnected();
   bool isFdFromCtrl(int &fd);
@@ -46,7 +53,7 @@ protected:
   std::vector<std::unique_ptr<InputDevice>> devs_;
   std::string hid_, type_;
   bool connected_;
-  std::vector<DeviceConnection> conns_;
+  std::list<DeviceConnection> conns_;
 };
 
 template<>

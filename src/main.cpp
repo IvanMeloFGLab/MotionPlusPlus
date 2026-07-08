@@ -10,7 +10,7 @@ using namespace std::chrono_literals;
 int main() {
   ControllerManager cm;
 
-  auto scn = cm.scan();
+  /*auto scn = cm.scan();
   if (!scn) {
     println("Scanning error: {}", scn.error().message());
     return 1;
@@ -25,7 +25,7 @@ int main() {
   if (!conn) {
     println("Connection error: {}", conn.error().message());
     return 1;
-  }
+  }*/
 
   //auto wm = dynamic_cast<WiiMote*>(cm.getController(1));
   //auto wm2 = dynamic_cast<WiiMote*>(cm.getController(2));
@@ -39,8 +39,22 @@ int main() {
   while (true) {
     auto up = cm.update(10ms);
 
+    if (cm.isNewContrllers()) {
+      println("New device connected.");
+      for (auto &ctrl_id : cm.getActiveControllers()) {
+        println("{}", *(cm.getController(ctrl_id)));
+      }
+    }
+
     if (!up) {
       if (up.error().value() == EAGAIN) continue;
+      if (up.error().value() == POLLHUP) {
+        println("Device disconnected.");
+        for (auto &ctrl_id : cm.getActiveControllers()) {
+          println("{}", *(cm.getController(ctrl_id)));
+        }
+        continue;
+      }
       println("Update error: {}", up.error().message());
       return 1;
     }

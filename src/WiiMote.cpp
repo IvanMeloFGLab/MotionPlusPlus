@@ -7,7 +7,7 @@ using std::shared_ptr;
 using std::move;
 using std::pair;
 using std::make_pair;
-using std::unordered_map;
+using std::map;
 using std::expected;
 using std::unexpected;
 using std::error_code;
@@ -22,6 +22,7 @@ using std::sin;
 using std::cos;
 using std::ifstream;
 using std::ofstream;
+using std::ranges::contains;
 
 using milis = std::chrono::milliseconds;
 
@@ -30,8 +31,9 @@ WiiMote::WiiMote(shared_ptr<DeviceManager> dm, int ctrl_id, vector<std::unique_p
   bat_path_ = "/sys/class/power_supply/wiimote_battery_";
   leds_path_ = "/sys/class/leds/" + hid_ + ":blue:p";
   leds_ = Leds(leds_path_);
+  stop_leds_ = false;
 
-  animLed(milis(3000));
+  animLed(milis(3000), milis(350));
 }
 
 WiiMote::WiiMote(WiiMote&& other) : Controller(move(other)) {
@@ -39,17 +41,21 @@ WiiMote::WiiMote(WiiMote&& other) : Controller(move(other)) {
 }
 
 WiiMote::~WiiMote() {
-
+  stop_leds_ = true;
+  if (leds_thread_.joinable()) leds_thread_.join();
 }
 
-pair<unordered_map<int, unique_ptr<Controller>>, int> WiiMote::discover(shared_ptr<DeviceManager> dm, int ctrl_id_off,
-                                                         unordered_map<string, vector<unique_ptr<InputDevice>>> &grps) {
-  unordered_map<int, unique_ptr<Controller>> ctrls;
-  int i = ctrl_id_off;
+pair<map<int, unique_ptr<Controller>>, int> WiiMote::discover(shared_ptr<DeviceManager> dm, vector<int> &bussyIds,
+                                                              map<string, vector<unique_ptr<InputDevice>>> &grps) {
+  map<int, unique_ptr<Controller>> ctrls;
+  int i = 1;
 
   for (auto &grp : grps) {
     if (grp.first.find("0005:057E:0306") != string::npos) { //Bluetooth:Nintendo:Wiimote
+      while (contains(bussyIds, i)) i++;
+
       ctrls.emplace(i, unique_ptr<WiiMote>(new WiiMote(dm, i, move(grp.second))));
+      bussyIds.push_back(i);
       i++;
     }
   }
@@ -216,18 +222,32 @@ expected<void, error_code> WiiMote::rumble(int intensity, milis time, double fre
   return {};
 }
 
-expected<void, error_code> WiiMote::animLed(milis time) {
-  auto led = setLedId(0);
-  if (!led) return unexpected(led.error());
-  thread([this, leds = leds_, time]() {
+expected<void, error_code> WiiMote::animLed(milis time, milis delay) {
+  leds_thread_ = thread([this, time, delay]() {
+    sleep_for(milis(delay));
     auto end = time / 16;
-    for (int i = 0; i <= 15; i++) {
+    for (int i = 0; i <= 15 && !stop_leds_.load(); i++) {
       setLedId(i);
       sleep_for(milis(end));
     }
-    setLedId(ctrl_id_);
-  }).detach();
+    if (!stop_leds_.load()) setLedId(ctrl_id_);
+  });
   return {};
+}
+
+bool WiiMote::onLostFd(int fd) {
+  for (auto it = conns_.begin(); it != conns_.end(); it++) {
+    if (it->getFd() == fd) {
+      if (it->getDeviceName().find("Motion Plus") != string::npos || it->getDeviceName().find("Nunchuk") != string::npos) {
+        removeDeviceFor(*it);
+        conns_.erase(it);
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+  return true;
 }
 
 const Buttons WiiMote::getButtons() const {

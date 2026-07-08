@@ -5,11 +5,12 @@
 #include <memory>
 #include <chrono>
 #include <utility>
-#include <unordered_map>
+#include <map>
 #include <thread>
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <atomic>
 
 struct Buttons {
   bool a;
@@ -77,7 +78,7 @@ private:
   WiiMote(std::shared_ptr<DeviceManager> dm, int ctrl_id, std::vector<std::unique_ptr<InputDevice>> devs);
 
 public:
-  static std::pair<std::unordered_map<int, std::unique_ptr<Controller>>, int> discover(std::shared_ptr<DeviceManager> dm, int ctrl_id_off, std::unordered_map<std::string, std::vector<std::unique_ptr<InputDevice>>> &grps);
+  static std::pair<std::map<int, std::unique_ptr<Controller>>, int> discover(std::shared_ptr<DeviceManager> dm, std::vector<int> &bussyIds, std::map<std::string, std::vector<std::unique_ptr<InputDevice>>> &grps);
 
   WiiMote(WiiMote&& other);
   WiiMote(const WiiMote&) = delete;
@@ -86,7 +87,9 @@ public:
 
   void update(int fd, input_event ev) override;
   std::expected<void, std::error_code> rumble(int intensity, std::chrono::milliseconds time, double freq=0, double offset=0);
-  std::expected<void, std::error_code> animLed(std::chrono::milliseconds time);
+  std::expected<void, std::error_code> animLed(std::chrono::milliseconds time, std::chrono::milliseconds delay=std::chrono::milliseconds(0));
+
+  bool onLostFd(int fd) override;
 
   const Buttons getButtons() const;
   const Accelerometer getAccel() const;
@@ -104,5 +107,7 @@ private:
   Ir ir_;
   Leds leds_;
 
+  std::thread leds_thread_;
+  std::atomic<bool> stop_leds_{false};
   std::string bat_path_, leds_path_;
 };

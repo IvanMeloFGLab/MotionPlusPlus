@@ -9,8 +9,9 @@
 #include <chrono>
 #include <poll.h>
 #include <cerrno>
-#include <unordered_map>
+#include <map>
 #include <utility>
+#include <unordered_set>
 
 class ControllerManager {
 public:
@@ -20,13 +21,22 @@ public:
   std::expected<std::vector<std::pair<int, std::string>>, std::error_code> scan();
   std::expected<void, std::error_code> connect();
   std::expected<void, std::error_code> update(std::chrono::milliseconds timeout);
+  std::expected<void, std::error_code> disconnect(std::pair<const int, std::unique_ptr<Controller>> &ctrl, int fd);
 
+  std::vector<int> getActiveControllers();
   Controller* getController(int id);
+
+  bool isNewContrllers();
 
 private:
   std::expected<void, std::error_code> updateFds();
+  std::expected<std::vector<InputDevice>, std::error_code> lightScan();
 
   DeviceManager dm_;
-  std::unordered_map<int, std::unique_ptr<Controller>> ctrls_;
+  std::map<int, std::unique_ptr<Controller>> ctrls_;
   std::vector<pollfd> fds_;
+  int device_num_;
+  std::chrono::milliseconds scan_interval_;
+  std::chrono::steady_clock::time_point last_scan_;
+  bool new_controllers_;
 };

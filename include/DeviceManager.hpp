@@ -10,7 +10,7 @@
 #include <cerrno>
 #include <format>
 #include <utility>
-#include <unordered_map>
+#include <map>
 #include <memory>
 
 struct InputDevice {
@@ -65,5 +65,5 @@ public:
 
   std::expected<std::vector<InputDevice>, std::error_code> scan();
   std::expected<void, std::pair<std::error_code, std::string>> populateMetadata(std::vector<InputDevice> &input_devices);
-  std::unordered_map<std::string, std::vector<std::unique_ptr<InputDevice>>> groupByHid(std::vector<InputDevice> &input_devices);
+  std::map<std::string, std::vector<std::unique_ptr<InputDevice>>> groupByHid(std::vector<InputDevice> &input_devices);
 };

@@ -30,7 +30,10 @@ expected<vector<pair<int, string>>, error_code> ControllerManager::scan() {
   if (!input_devices) return unexpected(input_devices.error());
 
   auto res = dm_.populateMetadata(*input_devices);
-  if (!res) return unexpected(res.error().first);
+  if (!res) {
+    if (res.error().first.value() == EACCES) return {};
+    return unexpected(res.error().first);
+  }
 
   auto groups = dm_.groupByHid(*input_devices);
 

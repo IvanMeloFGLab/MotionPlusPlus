@@ -1,104 +1,111 @@
-# MotionPlusPlus
+# LibMotionPlusPlus
 
-Modern C++23 library for Nintendo Wii Remote support on Linux.
+> A modern C++ library for turning motion controllers into customizable input devices on Linux.
 
-MotionPlusPlus is a Linux-native controller framework focused on the Nintendo Wii Remote family. The library provides direct access to the Wiimote's individual sensors and capabilities through a modern C++ API.
+LibMotionPlusPlus is an open-source C++ library focused on bringing advanced support for motion-based controllers such as the Nintendo Wii Remote, Wii MotionPlus, Sony PS Move, and future devices to Linux.
 
-The project is designed with extensibility in mind, allowing additional HID-based controllers to be added without changing the core architecture.
+It handles device discovery, hotplug/disconnect handling, and decoding raw controller state — buttons, motion, extensions — reliably and without needing root access. It intentionally does not map input to actions or emulate devices; see [Project Direction](#project-direction) for where that lives.
 
----
+## Project Direction
 
-## Current features
+LibMotionPlusPlus is a **C++ library**, its scope is : **device discovery, hotplug/disconnect handling, and the controller abstraction layer** — reading raw controller state (buttons, motion, extensions) reliably. It does not map input to actions, emulate devices, or provide any user-facing configuration; that's left to the projects built on top of it.
 
-- Linux evdev backend
-- Automatic discovery of HID devices
-- Physical device grouping
-- Generic controller abstraction
-- Wiimote controller implementation
-- Reading:
-  - Buttons
-  - Accelerometer
-  - MotionPlus gyroscope
-  - IR camera coordinates
+Three separate projects make up the overall ecosystem:
 
----
+* **`LibMotionPlusPlus`** *(this repository)* — the core library. Discovers controllers, manages their lifecycle, and exposes raw decoded input. No mapping, no virtual devices, no configuration — just the controllers.
+* **`MotionPlusPlus`** *(daemon/application, planned)* — a desktop daemon built on top of the library, responsible for mapping controller input to actions, creating and managing virtual input devices (mouse/keyboard/gamepad emulation), and user-facing profile configuration.
+* **`ros2_motionplusplus`** *(planned)* — a ROS 2 package built on top of the library, focused on motion-controller data collection, sensor fusion/pose estimation, and RViz visualization support for robotics use cases.
 
-## Current architecture
+A small demo executable showing basic usage of the library itself is included under [`example/`](example/).
 
-```
-                DeviceManager
-                      │
-        scans /dev/input/event*
-                      │
-              InputDevice objects
-                      │
-          grouped by physical HID
-                      │
-             Controller discovery
-                      │
-        ┌─────────────┴─────────────┐
-        │                           │
-    WiiMote                  Future controllers
-        │
-  DeviceConnection(s)
-        │
-     Linux evdev
-```
+## Project Goals
 
----
+* Native Linux support
+* Low-latency input processing
+* Modular and extensible architecture, packaged as a reusable library
+* Hotplug handling (connect/disconnect, partial extension loss)
+* Support for multiple controller families
 
-## Project goals
+## Planned Controller Support
 
-MotionPlusPlus is intended to become a complete Linux framework for motion controllers, including:
+* Nintendo Wii Remote
+* Wii MotionPlus
+* Wii Nunchuk
+* Sony PS Move
+* Additional HID motion controllers in the future
 
-- Wiimote
-- MotionPlus
-- Sony PS Move support (planned)
+## Current Status
 
-Long-term goals include:
+Current milestone:
 
-- LED control
-- Rumble
-- Speaker support
-- Motion tracking
-- VR experimentation
-- ROS 2 integration through the separate **ros2_motionplusplus** project
+* Library-oriented CMake build system (`find_package`-able, versioned, exported targets)
+* C++23 codebase
+* Device discovery with runtime hotplug/disconnect handling
+* Metadata extraction using libevdev
+* udev-based permission setup — no root required for normal use
+* Wii Remote input decoding (buttons, accelerometer, MotionPlus, IR) with LED and battery support
 
----
+The project is under active development and is **not yet ready for daily use**. The public API is not yet stable (pre-1.0) and may change between minor versions.
 
-## Requirements
+## Dependencies
 
-- Linux
-- C++23
-- CMake ≥ 3.20
-- libevdev
+Current dependencies:
 
----
+* C++23 compatible compiler
+* CMake ≥ 3.20
+* libevdev
+* pkg-config
 
-## Build
+## Building
 
 ```bash
-mkdir build
-cd build
-
-cmake ..
-make
+git clone https://github.com/IvanMeloFGLab/LibMotionPlusPlus.git
+cd LibMotionPlusPlus
+mkdir build && cd build
+cmake .. -DMOTIONPLUSPLUS_BUILD_EXAMPLES=ON
+cmake --build .
 ```
 
----
+To install the library system-wide (headers, compiled library, and CMake package config for `find_package`):
 
-## Current status
+```bash
+sudo cmake --install .
+```
 
-The project is in active development.
+### Using it as a library in your own CMake project
 
-Implemented:
+Once installed:
 
-- ✔ Device discovery
-- ✔ Controller discovery
-- ✔ Wiimote state decoding
-- ✔ Multi-controller polling
+```cmake
+find_package(LibMotionPlusPlus REQUIRED)
+target_link_libraries(your_target PRIVATE LibMotionPlusPlus::motionplusplus)
+```
 
-In progress:
+### Device permissions (no `sudo` required)
 
-- ⏳ Output features (LEDs, rumble)
-- ⏳ Extension devices
+Accessing a Wii Remote's input, LED, and battery interfaces normally requires elevated privileges. MotionPlusPlus ships a udev rule set to avoid this.
+
+**Option 1 — let CMake install it:**
+
+```bash
+cmake .. -DMOTIONPLUSPLUS_INSTALL_UDEV_RULES=ON
+sudo cmake --install .
+```
+
+**Option 2 — install manually:**
+
+```bash
+sudo cp udev/99-motionplusplus.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+sudo usermod -aG input $USER
+```
+
+Then **log out and back in** (group membership is applied at login), and physically disconnect/reconnect your controller so the new rule is applied to it. After that, running the demo:
+
+```bash
+./example/motionplusplus_demo
+```
+
+## License
+
+This project is licensed under the **GNU General Public License v3.0**. See [`LICENSE`](LICENSE) for the full text.

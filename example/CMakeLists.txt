@@ -1,0 +1,2 @@
+add_executable(motionplusplus_demo main.cpp)
+target_link_libraries(motionplusplus_demo PRIVATE LibMotionPlusPlus::libmotionplusplus)

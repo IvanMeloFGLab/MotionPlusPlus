@@ -1,4 +1,4 @@
-#include "DeviceManager.hpp"
+#include "libmotionplusplus/DeviceManager.hpp"
 
 using std::println;
 using std::string;
@@ -12,9 +12,11 @@ using std::generic_category;
 using std::filesystem::canonical;
 using std::pair;
 using std::make_pair;
-using std::unordered_map;
+using std::map;
 using std::unique_ptr;
 using std::make_unique;
+
+using namespace motionplusplus;
 
 DeviceManager::DeviceManager() {
 
@@ -81,8 +83,8 @@ expected<void, pair<error_code, string>> DeviceManager::populateMetadata(vector<
   return {};
 }
 
-unordered_map<string, vector<unique_ptr<InputDevice>>> DeviceManager::groupByHid(vector<InputDevice> &input_devices) {
-  unordered_map<string, vector<unique_ptr<InputDevice>>> grouped_devices;
+map<string, vector<unique_ptr<InputDevice>>> DeviceManager::groupByHid(vector<InputDevice> &input_devices) {
+  map<string, vector<unique_ptr<InputDevice>>> grouped_devices;
   for(auto &in_d : input_devices) {
     grouped_devices[in_d.hid].emplace_back(make_unique<InputDevice>(in_d));
   }

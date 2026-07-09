@@ -1,4 +1,4 @@
-#include "DeviceConnection.hpp"
+#include "libmotionplusplus/DeviceConnection.hpp"
 
 using std::runtime_error;
 using std::expected;
@@ -6,6 +6,8 @@ using std::unexpected;
 using std::string;
 using std::error_code;
 using std::generic_category;
+
+using namespace motionplusplus;
 
 DeviceConnection::DeviceConnection(const InputDevice &device, int fd, libevdev *dev) : device_(device), fd_(fd), dev_(dev) {
 
@@ -22,7 +24,7 @@ DeviceConnection::~DeviceConnection() {
 }
 
 expected<DeviceConnection, error_code> DeviceConnection::connect(const InputDevice &device) {
-  int fd = open(device.path.string().c_str(), O_RDONLY | O_NONBLOCK);
+  int fd = open(device.path.string().c_str(), O_RDWR | O_NONBLOCK);
 
   if (fd < 0) return unexpected(error_code(errno, generic_category()));
 
@@ -56,6 +58,29 @@ expected<input_event, error_code> DeviceConnection::read() {
   }
 }
 
+expected<int, error_code> DeviceConnection::uploadEffect(ff_effect &effect) {
+  if (ioctl(fd_, EVIOCSFF, &effect) < 0) return unexpected(error_code(errno, generic_category()));
+  return effect.id;     // kernel fills in the id
+}
+
+expected<void, error_code> DeviceConnection::playEffect(int effect_id) {
+  input_event ev{};
+  ev.type = EV_FF;
+  ev.code = effect_id;
+  ev.value = 1;         // play once
+  if (write(fd_, &ev, sizeof(ev)) < 0) return unexpected(error_code(errno, generic_category()));
+  return {};
+}
+
+expected<void, error_code> DeviceConnection::stopEffect(int effect_id) {
+  input_event ev{};
+  ev.type = EV_FF;
+  ev.code = effect_id;
+  ev.value = 0;
+  if (write(fd_, &ev, sizeof(ev)) < 0) return unexpected(error_code(errno, generic_category()));
+  return {};
+}
+
 int DeviceConnection::getFd() {
   return fd_;
 }
@@ -64,4 +89,6 @@ const string DeviceConnection::getDeviceName() {
   return device_.name;
 }
 
-
+const InputDevice &DeviceConnection::getDevice() const {
+  return device_;
+}

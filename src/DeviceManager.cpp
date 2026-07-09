@@ -1,4 +1,4 @@
-#include "DeviceManager.hpp"
+#include "libmotionplusplus/DeviceManager.hpp"
 
 using std::println;
 using std::string;
@@ -15,6 +15,8 @@ using std::make_pair;
 using std::map;
 using std::unique_ptr;
 using std::make_unique;
+
+using namespace motionplusplus;
 
 DeviceManager::DeviceManager() {
 

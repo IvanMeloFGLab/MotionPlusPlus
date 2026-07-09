@@ -1,4 +1,4 @@
-#include "WiiMote.hpp"
+#include "libmotionplusplus/WiiMote.hpp"
 
 using std::vector;
 using std::string;
@@ -25,6 +25,8 @@ using std::ofstream;
 using std::ranges::contains;
 
 using milis = std::chrono::milliseconds;
+
+using namespace motionplusplus;
 
 WiiMote::WiiMote(shared_ptr<DeviceManager> dm, int ctrl_id, vector<std::unique_ptr<InputDevice>> devs) : Controller(dm, ctrl_id, move(devs)) {
   type_ = "Wiimote";

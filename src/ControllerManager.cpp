@@ -1,4 +1,4 @@
-#include "ControllerManager.hpp"
+#include "libmotionplusplus/ControllerManager.hpp"
 
 #define it_ctrls for (auto &ctrl : ctrls_)
 
@@ -16,6 +16,8 @@ using std::unordered_set;
 using std::chrono::steady_clock;
 
 using milis = std::chrono::milliseconds;
+
+using namespace motionplusplus;
 
 ControllerManager::ControllerManager() : device_num_(0), scan_interval_(milis(250)), last_scan_(steady_clock::now()), new_controllers_(false) {
 

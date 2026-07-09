@@ -1,4 +1,4 @@
-#include "Controller.hpp"
+#include "libmotionplusplus/Controller.hpp"
 
 using std::string;
 using std::vector;
@@ -11,6 +11,8 @@ using std::make_unique;
 using std::generic_category;
 using std::move;
 using std::ifstream;
+
+using namespace motionplusplus;
 
 Controller::Controller(shared_ptr<DeviceManager> dm, int ctrl_id, vector<unique_ptr<InputDevice>> devs) : dm_(dm), ctrl_id_(ctrl_id), devs_(move(devs)) {
   hid_ = devs_.front()->hid;

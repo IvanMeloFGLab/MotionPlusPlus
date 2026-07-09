@@ -1,11 +1,12 @@
 #include <print>
 #include <chrono>
-#include "WiiMote.hpp"
-#include "ControllerManager.hpp"
+#include "libmotionplusplus/WiiMote.hpp"
+#include "libmotionplusplus/ControllerManager.hpp"
 
 using std::println;
 
 using namespace std::chrono_literals;
+using namespace motionplusplus;
 
 int main() {
   ControllerManager cm;

@@ -1,4 +1,4 @@
-#include "DeviceConnection.hpp"
+#include "libmotionplusplus/DeviceConnection.hpp"
 
 using std::runtime_error;
 using std::expected;
@@ -6,6 +6,8 @@ using std::unexpected;
 using std::string;
 using std::error_code;
 using std::generic_category;
+
+using namespace motionplusplus;
 
 DeviceConnection::DeviceConnection(const InputDevice &device, int fd, libevdev *dev) : device_(device), fd_(fd), dev_(dev) {
 

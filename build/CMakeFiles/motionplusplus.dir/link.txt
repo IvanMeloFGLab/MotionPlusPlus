@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/motionplusplus.dir/link.d CMakeFiles/motionplusplus.dir/src/motionplusplus.cpp.o -o motionplusplus-0.1.0  /usr/local/lib/liblibmotionplusplus.a /usr/lib/libevdev.so

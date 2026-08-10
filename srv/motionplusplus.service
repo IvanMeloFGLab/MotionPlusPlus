@@ -1,0 +1,10 @@
+[Unit]
+Description=MotionPlusPlus daemon
+After=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/bin/motionplusplus
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

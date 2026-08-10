@@ -1,3 +1,0 @@
-/home/ivan/Code/FGLab/MotionPlusPlus/build/CMakeFiles/motionplusplus.dir
-/home/ivan/Code/FGLab/MotionPlusPlus/build/CMakeFiles/edit_cache.dir
-/home/ivan/Code/FGLab/MotionPlusPlus/build/CMakeFiles/rebuild_cache.dir

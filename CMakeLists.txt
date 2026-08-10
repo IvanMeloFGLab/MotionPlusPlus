@@ -4,6 +4,10 @@ project(MotionPlusPlus VERSION 0.1.0 LANGUAGES CXX)
 
 find_package(LibMotionPlusPlus REQUIRED)
 
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "Install path" FORCE)
+endif()
+
 add_executable(motionplusplus
     src/motionplusplus.cpp
 )
@@ -27,7 +31,12 @@ target_compile_options(motionplusplus PRIVATE
     -Werror
 )
 
-set_target_properties(motionplusplus PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    SOVERSION ${PROJECT_VERSION_MAJOR}
+install(TARGETS motionplusplus
+    RUNTIME DESTINATION bin
 )
+
+install(FILES srv/motionplusplus.service
+    DESTINATION $ENV{HOME}/.config/systemd/user
+)
+
+install(CODE "execute_process(COMMAND systemctl --user daemon-reload)")

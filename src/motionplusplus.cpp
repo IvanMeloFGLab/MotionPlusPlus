@@ -97,7 +97,7 @@ int main () {
                 desired[key_num] |= *m.second;
             }
             for (const auto &[key_num, state] : desired) {
-                auto vcup = id2vc[id].back().setKey(key_num, state);
+                auto vcup = id2vc.at(id).back().setKey(key_num, state);
                 if (!vcup) {
                     println("Virtual controller error: {}", vcup.error().message());
                     cout.flush();
@@ -109,7 +109,7 @@ int main () {
             //auto accel = wm->getAccel();
             //println("x: {}, y: {}, z: {}", accel.x, accel.y, accel.z);
 
-            auto vcsy = id2vc[id].back().sync();
+            auto vcsy = id2vc.at(id).back().sync();
             if (!vcsy) {
                 println("Virtual controller sync error: {}", vcsy.error().message());
                 cout.flush();

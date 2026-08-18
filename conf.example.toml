@@ -1,0 +1,15 @@
+name = "motionpluplus_example_config"
+
+[wiimote]
+map_to = "keyboard"
+a = "KEY_A"
+b = "KEY_B"
+right = "KEY_RIGHT"
+left = "KEY_LEFT"
+up = "KEY_UP"
+down = "KEY_DOWN"
+plus = "KEY_KPPLUS"
+minus = "KEY_KPMINUS"
+home = "KEY_HOME"
+one = "KEY_1"
+# two = "KEY_2"

@@ -72,7 +72,14 @@ int main () {
 
                 auto [it, inserted] = id2vc.try_emplace(ctrl_id);
                 if (inserted) {
-                    it->second.emplace_back(InputType::keyboard);
+                    auto type = config["wiimote"]["buttons"]["map_to"].value<std::string>();
+                    if  (type.value_or("keyboard") == "keyboard") {
+                        it->second.emplace_back(InputType::keyboard);
+                    } else {
+                        println("Device {} not supported.", type.value());
+                        cout.flush();
+                        return 1;
+                    }
 
                     auto op = it->second.back().open();
                     if (!op) {
@@ -87,34 +94,57 @@ int main () {
         }
 
         for (auto &id : cm.getActiveControllers()) {
-            auto wm = dynamic_cast<WiiMote*>(cm.getController(id));
-            if (wm == nullptr) {println("Could not load controller {} as a WiiMote.", id); cout.flush(); return 1;}
-            auto btns = wm->getButtons();
-            std::unordered_map<uint16_t, bool> desired;
-            for (const auto &m : btns) {
-                auto key = config["wiimote"][m.first].value<std::string>();
-                uint16_t key_num = key_code_map.find(key.value_or("KEY_A")) != key_code_map.end() ? key_code_map.at(key.value_or("KEY_A")) : KEY_A;
-                desired[key_num] |= *m.second;
-            }
-            for (const auto &[key_num, state] : desired) {
-                auto vcup = id2vc.at(id).back().setKey(key_num, state);
-                if (!vcup) {
-                    println("Virtual controller error: {}", vcup.error().message());
+            if (cm.getController(id)->getType() == "wiimote" ) {
+                auto wm = dynamic_cast<WiiMote*>(cm.getController(id));
+                if (wm == nullptr) {println("Could not load controller {} as a WiiMote.", id); cout.flush(); return 1;}
+
+                auto btns = wm->getButtons();
+                std::unordered_map<uint16_t, bool> desired;
+                for (const auto &m : btns) {
+                    auto key = config["wiimote"]["buttons"][m.first].value<std::string>();
+                    uint16_t key_num = key_code_map.find(key.value_or("KEY_A")) != key_code_map.end() ? key_code_map.at(key.value_or("KEY_A")) : KEY_A;
+                    desired[key_num] |= *m.second;
+                }
+                for (const auto &[key_num, state] : desired) {
+                    auto vcup = id2vc.at(id).back().setKey(key_num, state);
+                    if (!vcup) {
+                        println("Virtual controller error: {}", vcup.error().message());
+                        cout.flush();
+                        running = false;
+                        continue;
+                    }
+                }
+
+                auto wiimote = config["wiimote"].as_table();
+                if (wiimote->contains("accel")) {
+                    auto accel = wm->getAccel();
+                    // println("x: {}, y: {}, z: {}", accel.x, accel.y, accel.z);
+                    std::unordered_map<uint16_t, bool> desired_a;
+                    for (const auto &a : accel) {
+                        auto key = config["wiimote"]["accel"][a.first]["key"].value<std::string>();
+                        uint16_t key_num = key_code_map.find(key.value_or("KEY_A")) != key_code_map.end() ? key_code_map.at(key.value_or("KEY_A")) : KEY_A;
+                        auto ntrigg = config["wiimote"]["accel"][a.first]["trigger"].value<double>();
+                        bool trigg = *a.second >= 500 * std::min(std::max(ntrigg.value_or(0.35), 0.0), 1.0) ? true : false;
+                        desired_a[key_num] |= trigg;
+                    }
+                    for (const auto &[key_num, state] : desired_a) {
+                        auto vcup = id2vc.at(id).back().setKey(key_num, state);
+                        if (!vcup) {
+                            println("Virtual controller error: {}", vcup.error().message());
+                            cout.flush();
+                            running = false;
+                            continue;
+                        }
+                    }
+                }
+
+                auto vcsy = id2vc.at(id).back().sync();
+                if (!vcsy) {
+                    println("Virtual controller sync error: {}", vcsy.error().message());
                     cout.flush();
                     running = false;
                     continue;
                 }
-            }
-
-            //auto accel = wm->getAccel();
-            //println("x: {}, y: {}, z: {}", accel.x, accel.y, accel.z);
-
-            auto vcsy = id2vc.at(id).back().sync();
-            if (!vcsy) {
-                println("Virtual controller sync error: {}", vcsy.error().message());
-                cout.flush();
-                running = false;
-                continue;
             }
         }
 

@@ -1,5 +1,8 @@
 name = "motionpluplus_example_config"
 
+[[wiimote]]
+ID = 2
+
 [wiimote.buttons]
 map_to = "keyboard"
 a = "KEY_W"
@@ -18,7 +21,9 @@ two = "KEY_2"
 map_to = "keyboard"
 x.key = "KEY_X"
 x.trigger = 0.5                     # Force to trigger key.
+x.trigger_direction = "+"     # "+" or "-" or "+/-"
 y.key = "KEY_Y"
 y.trigger = 0.4
 z.key = "KEY_Z"
 z.trigger = 0.65
+

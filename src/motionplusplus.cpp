@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <vector>
+#include <utility>
 #include <algorithm>
 
 #include "libmotionplusplus/WiiMote.hpp"
@@ -27,6 +28,8 @@ using std::string;
 using std::vector;
 using std::unordered_map;
 using std::clamp;
+using std::pair;
+using std::to_string;
 
 using namespace std::chrono_literals;
 using namespace motionplusplus;
@@ -40,19 +43,32 @@ struct Axis {
 struct ConfigMap {
     string name;
 
-    bool btn2key;
-    unordered_map<int, unordered_map<string, uint16_t>> btn2key_map;
+    unordered_map<int, pair<bool, unordered_map<string, uint16_t>>> btn2key_map;
 
-    bool accel2key;
-    unordered_map<int, unordered_map<string, Axis>> accel2key_map;
+    unordered_map<int, pair<bool, unordered_map<string, Axis>>> accel2key_map;
 };
+
+int full_find_or_default(const ConfigMap &map, const int &id) {
+    int res  = map.btn2key_map.find(id) != map.btn2key_map.end() ||
+                    map.accel2key_map.find(id) != map.accel2key_map.end() ? id :
+                    map.btn2key_map.find(0) != map.btn2key_map.end() ||
+                    map.accel2key_map.find(0) != map.accel2key_map.end() ? 0 : -1;
+
+    return res;
+}
+
+template<typename K, typename V>
+int find_or_default(const unordered_map<K, V> &map, const int &id) {
+    int res  = map.find(id) != map.end() ? id : map.find(0) != map.end() ? 0 : -1;
+
+    return res;
+}
 
 std::atomic<bool> running{true};
 
 void quitHandle(int) {running = false; }
 
 unordered_map<int, vector<VirtualController>> id2vc;
-unordered_map<uint16_t, int> key_cnt;
 
 void println_id2vc() {
     println("Controller mapping table:");
@@ -85,8 +101,6 @@ ConfigMap map_from_toml(toml::table conf){
 
             //Buttons
             if (auto conf_btns = (*wm_c)["buttons"].as_table()) {
-                map.btn2key = (*conf_btns)["map_to"].value<string>().value() == "keyboard";
-
                 unordered_map<string, uint16_t> btns;
                 for (auto btn : BTNS) {
                     if (auto key = (*conf_btns)[btn].value<string>()) {
@@ -99,34 +113,32 @@ ConfigMap map_from_toml(toml::table conf){
                     }
                 }
 
-                map.btn2key_map.emplace(ctrl_id, std::move(btns));
+                map.btn2key_map.emplace(ctrl_id, pair((*conf_btns)["map_to"].value<string>().value() == "keyboard", std::move(btns)));
             } else {
-                println("No buttons config detected.");
+                println("No buttons config detected for ID: {}.", ctrl_id == 0 ? "Default" : to_string(ctrl_id));
                 cout.flush();
             }
 
             //Accel
             if (auto conf_accel = (*wm_c)["accel"].as_table()) {
-                map.accel2key = (*conf_accel)["map_to"].value<string>().value() == "keyboard";
-
                 unordered_map<string, Axis> axs;
                 for (auto axis : ACCEL) {
                     if (auto key = (*conf_accel)[axis]["key"].value<string>()) {
                         if (key_code_map.find(key.value()) != key_code_map.end()) {
                             axs[axis].key = key_code_map.at(key.value());
+                            axs[axis].trigger = clamp((*conf_accel)[axis]["trigger"].value<double>().value_or(0.5), 0.0, 1.0);
+                            axs[axis].direction = (*conf_accel)[axis]["trigger_direction"].value<string>().value_or("+/-") == "+/-" ? 0 :
+                                                            (*conf_accel)[axis]["trigger_direction"].value<string>().value() == "+" ? 1 : -1;
                         } else {
                             println("Warning: {} key is not supported.", key.value());
                             cout.flush();
                         }
-                        axs[axis].trigger = clamp((*conf_accel)[axis]["trigger"].value<double>().value_or(0.5), 0.0, 1.0);
-                        axs[axis].direction = (*conf_accel)[axis]["trigger_direction"].value<string>().value_or("+/-") == "+/-" ? 0 :
-                                                          (*conf_accel)[axis]["trigger_direction"].value<string>().value() == "+" ? 1 : -1;
                     }
                 }
 
-                map.accel2key_map.emplace(ctrl_id, std::move(axs));
+                map.accel2key_map.emplace(ctrl_id, pair((*conf_accel)["map_to"].value<string>().value() == "keyboard", std::move(axs)));
             } else {
-                println("No accelerometer config detected.");
+                println("No accelerometer config detected for ID: {}.", ctrl_id == 0 ? "Default" : to_string(ctrl_id));
                 cout.flush();
             }
         }
@@ -159,9 +171,26 @@ int main () {
                 //Virtual devices creation.
                 auto [it, inserted] = id2vc.try_emplace(ctrl_id);
                 if (inserted) {
-                    if  (mapping.btn2key || mapping.accel2key) {
-                        it->second.emplace_back(InputType::keyboard);
+                    auto set = false;
+
+                    auto tmp_id = full_find_or_default(mapping, ctrl_id);
+                    if (tmp_id == -1) continue;
+
+                    if (mapping.btn2key_map.find(tmp_id) != mapping.btn2key_map.end()) {
+                        if  (mapping.btn2key_map.at(tmp_id).first) {
+                            it->second.emplace_back(InputType::keyboard);
+                            set = true;
+                        }
                     }
+
+                    if  ((mapping.accel2key_map.find(tmp_id) != mapping.accel2key_map.end()) && !set) {
+                        if (mapping.accel2key_map.at(tmp_id).first) {
+                            it->second.emplace_back(InputType::keyboard);
+                            set = true;
+                        }
+                    }
+
+                    if (!set) continue;
 
                     auto op = it->second.back().open();
                     if (!op) {
@@ -179,43 +208,51 @@ int main () {
             if (cm.getController(id)->getType() == "wiimote" ) {
                 auto wm = dynamic_cast<WiiMote*>(cm.getController(id));
                 if (wm == nullptr) {println("Could not load controller {} as a WiiMote.", id); cout.flush(); return 1;}
-                if (mapping.btn2key_map.find(id) == mapping.btn2key_map.end()) continue;
 
                 std::unordered_map<uint16_t, bool> desired;
 
-                if (mapping.btn2key) {
-                    auto btn_map = mapping.btn2key_map.find(id) != mapping.btn2key_map.end() ? mapping.btn2key_map.at(id) : mapping.btn2key_map.at(0);
+                auto tmp_id = full_find_or_default(mapping, id);
+                if (tmp_id == -1) continue;
 
-                    auto btns = wm->getButtons();
-                    for (const auto &m : btns) {
-                        desired[btn_map.at(m.first)] |= m.second;
+                if (mapping.btn2key_map.find(tmp_id) != mapping.btn2key_map.end()) {
+                    if (mapping.btn2key_map.at(tmp_id).first) {
+                        const auto& btn_map = mapping.btn2key_map.at(tmp_id).second;
+
+                        auto btns = wm->getButtons();
+                        for (const auto &m : btns) {
+                            desired[btn_map.at(m.first)] |= m.second;
+                        }
                     }
                 }
 
-                if (mapping.accel2key) {
-                    auto accel_map = mapping.accel2key_map.find(id) != mapping.accel2key_map.end() ? mapping.accel2key_map.at(id) : mapping.accel2key_map.at(0);
+                if (mapping.accel2key_map.find(tmp_id) != mapping.accel2key_map.end()) {
+                    if (mapping.accel2key_map.at(tmp_id).first) {
+                        const auto& accel_map = mapping.accel2key_map.at(tmp_id).second;
 
-                    auto accel = wm->getAccel();
-                    //println("x: {}, y: {}, z: {}", accel.at("x"), accel.at("y"), accel.at("z"));
-                    for (const auto &a : accel) {
-                        auto ntrigg = accel_map.at(a.first).trigger;
-                        auto dir = accel_map.at(a.first).direction;
-                        bool trigg = false;
+                        auto accel = wm->getAccel();
+                        //println("x: {}, y: {}, z: {}", accel.at("x"), accel.at("y"), accel.at("z"));
+                        for (const auto &a : accel) {
+                            if (accel_map.find(a.first) == accel_map.end()) continue;
 
-                        switch (dir) {
-                            case 0: {
-                                trigg = a.second >= 500 * ntrigg || a.second <= -500 * ntrigg;
-                                break;
-                            } case 1: {
-                                trigg = a.second >= 500 * ntrigg;
-                                break;
-                            } case -1: {
-                                trigg = a.second <= -500 * ntrigg;
-                                break;
+                            auto ntrigg = accel_map.at(a.first).trigger;
+                            auto dir = accel_map.at(a.first).direction;
+                            bool trigg = false;
+
+                            switch (dir) {
+                                case 0: {
+                                    trigg = a.second >= 500 * ntrigg || a.second <= -500 * ntrigg;
+                                    break;
+                                } case 1: {
+                                    trigg = a.second >= 500 * ntrigg;
+                                    break;
+                                } case -1: {
+                                    trigg = a.second <= -500 * ntrigg;
+                                    break;
+                                }
                             }
-                        }
 
-                        desired[accel_map.at(a.first).key] |= trigg;
+                            desired[accel_map.at(a.first).key] |= trigg;
+                        }
                     }
                 }
 

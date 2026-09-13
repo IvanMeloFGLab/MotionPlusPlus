@@ -1,7 +1,6 @@
 name = "motionpluplus_example_config"
 
 [[wiimote]]
-ID = 2
 
 [wiimote.buttons]
 map_to = "keyboard"
@@ -16,6 +15,10 @@ minus = "KEY_KPMINUS"
 home = "KEY_HOME"
 one = "KEY_1"
 two = "KEY_2"
+
+
+[[wiimote]]
+ID = 2
 
 [wiimote.accel]
 map_to = "keyboard"

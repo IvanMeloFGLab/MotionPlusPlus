@@ -1,3 +1,4 @@
+#include <cerrno>
 #include <cstdint>
 #include <ostream>
 #include <print>
@@ -34,32 +35,38 @@ using std::to_string;
 using namespace std::chrono_literals;
 using namespace motionplusplus;
 
+enum class InputConf {
+    keyboard,
+    mouse,
+    keymouse,
+    none
+};
+
 struct Axis {
     uint16_t key;
     double trigger;
     int8_t direction;
 };
 
+struct IrConf {
+    double sensitivity;
+};
+
 struct ConfigMap {
     string name;
 
-    unordered_map<int, pair<bool, unordered_map<string, uint16_t>>> btn2key_map;
-
-    unordered_map<int, pair<bool, unordered_map<string, Axis>>> accel2key_map;
+    unordered_map<int, pair<InputConf, unordered_map<string, uint16_t>>> btn2key;
+    unordered_map<int, pair<bool, unordered_map<string, Axis>>> accel2key;
+    unordered_map<int, pair<bool, IrConf>> ir2mouse;
 };
 
 int full_find_or_default(const ConfigMap &map, const int &id) {
-    int res  = map.btn2key_map.find(id) != map.btn2key_map.end() ||
-                    map.accel2key_map.find(id) != map.accel2key_map.end() ? id :
-                    map.btn2key_map.find(0) != map.btn2key_map.end() ||
-                    map.accel2key_map.find(0) != map.accel2key_map.end() ? 0 : -1;
-
-    return res;
-}
-
-template<typename K, typename V>
-int find_or_default(const unordered_map<K, V> &map, const int &id) {
-    int res  = map.find(id) != map.end() ? id : map.find(0) != map.end() ? 0 : -1;
+    int res  = map.btn2key.find(id) != map.btn2key.end() ||
+                    map.accel2key.find(id) != map.accel2key.end() ||
+                    map.ir2mouse.find(id) != map.ir2mouse.end() ? id :
+                    map.btn2key.find(0) != map.btn2key.end() ||
+                    map.accel2key.find(0) != map.accel2key.end() ||
+                    map.ir2mouse.find(0) != map.ir2mouse.end() ? 0 : -1;
 
     return res;
 }
@@ -70,13 +77,33 @@ void quitHandle(int) {running = false; }
 
 unordered_map<int, vector<VirtualController>> id2vc;
 
+Point last_point = {0, 0};
+
 void println_id2vc() {
     println("Controller mapping table:");
     for (auto &id_vc : id2vc) {
         print(" - Ctrl {} -> [ ", id_vc.first);
-        for (auto &vc : id_vc.second) print("{}", vc.getFd());
+        for (auto &vc : id_vc.second) print("{}/", vc.getFd());
         println(" ]");
     }
+}
+
+VirtualController* findVc(vector<VirtualController> &vcs, InputType type) {
+    auto it = std::find_if(vcs.begin(), vcs.end(), [type](const VirtualController &vc) { return vc.getType() == type; });
+    return it != vcs.end() ? &(*it) : nullptr;
+}
+
+InputConf str2tp(string tp) {
+    if (tp == "keyboard") return InputConf::keyboard;
+    if (tp == "mouse") return InputConf::mouse;
+    if (tp == "mouse+keyboard") return InputConf::keymouse;
+    return InputConf::none;
+}
+
+InputType InputConf2InputType (InputConf ip) {
+    if (ip == InputConf::keyboard) return InputType::keyboard;
+    if (ip == InputConf::mouse) return InputType::mouse;
+    return InputType::none;
 }
 
 ConfigMap map_from_toml(toml::table conf){
@@ -113,7 +140,17 @@ ConfigMap map_from_toml(toml::table conf){
                     }
                 }
 
-                map.btn2key_map.emplace(ctrl_id, pair((*conf_btns)["map_to"].value<string>().value() == "keyboard", std::move(btns)));
+                if (auto map_to = (*conf_btns)["map_to"].value<string>()) {
+                    auto tp =str2tp(map_to.value());
+                    if (tp != InputConf::none) map.btn2key.emplace(ctrl_id, pair(tp, std::move(btns))); else {
+                        println("Warning no valid map_to config detected for ID: {}.", ctrl_id == 0 ? "Default" : to_string(ctrl_id));
+                        cout.flush();
+                    }
+                } else {
+                    println("Warning no buttons map_to config detected for ID: {}.", ctrl_id == 0 ? "Default" : to_string(ctrl_id));
+                    cout.flush();
+                }
+
             } else {
                 println("No buttons config detected for ID: {}.", ctrl_id == 0 ? "Default" : to_string(ctrl_id));
                 cout.flush();
@@ -136,9 +173,20 @@ ConfigMap map_from_toml(toml::table conf){
                     }
                 }
 
-                map.accel2key_map.emplace(ctrl_id, pair((*conf_accel)["map_to"].value<string>().value() == "keyboard", std::move(axs)));
+                map.accel2key.emplace(ctrl_id, pair((*conf_accel)["map_to"].value<string>().value_or("") == "keyboard", std::move(axs)));
             } else {
                 println("No accelerometer config detected for ID: {}.", ctrl_id == 0 ? "Default" : to_string(ctrl_id));
+                cout.flush();
+            }
+
+            //IR
+            if (auto conf_ir = (*wm_c)["ir"].as_table()) {
+                IrConf mv;
+                mv.sensitivity = (*conf_ir)["sensitivity"].value<double>().value_or(1.0);
+
+                map.ir2mouse.emplace(ctrl_id, pair((*conf_ir)["map_to"].value<string>().value_or("") == "mouse", std::move(mv)));
+            } else {
+                println("No IR config detected for ID: {}.", ctrl_id == 0 ? "Default" : to_string(ctrl_id));
                 cout.flush();
             }
         }
@@ -163,6 +211,7 @@ int main () {
     while (running) {
         auto up = cm.update(10ms);
 
+        // Find new controllers
         if (cm.isNewContrllers()) {
             println("New device connected.");
             for (auto &ctrl_id : cm.getActiveControllers()) {
@@ -171,32 +220,38 @@ int main () {
                 //Virtual devices creation.
                 auto [it, inserted] = id2vc.try_emplace(ctrl_id);
                 if (inserted) {
-                    auto set = false;
-
                     auto tmp_id = full_find_or_default(mapping, ctrl_id);
                     if (tmp_id == -1) continue;
 
-                    if (mapping.btn2key_map.find(tmp_id) != mapping.btn2key_map.end()) {
-                        if  (mapping.btn2key_map.at(tmp_id).first) {
-                            it->second.emplace_back(InputType::keyboard);
-                            set = true;
+                    if (mapping.btn2key.find(tmp_id) != mapping.btn2key.end()) {
+                        if (mapping.btn2key.at(tmp_id).first == InputConf::keymouse){
+                            if (findVc(it->second, InputType::keyboard) == nullptr) it->second.emplace_back(InputType::keyboard);
+                            if (findVc(it->second, InputType::mouse) == nullptr) it->second.emplace_back(InputType::mouse);
+                        } else {
+                            auto in = InputConf2InputType(mapping.btn2key.at(tmp_id).first);
+                            if (findVc(it->second, in) == nullptr) it->second.emplace_back(in);
                         }
                     }
 
-                    if  ((mapping.accel2key_map.find(tmp_id) != mapping.accel2key_map.end()) && !set) {
-                        if (mapping.accel2key_map.at(tmp_id).first) {
-                            it->second.emplace_back(InputType::keyboard);
-                            set = true;
+                    if  (mapping.accel2key.find(tmp_id) != mapping.accel2key.end()) {
+                        if (mapping.accel2key.at(tmp_id).first) {
+                            if (findVc(it->second, InputType::keyboard) == nullptr) it->second.emplace_back(InputType::keyboard);
                         }
                     }
 
-                    if (!set) continue;
+                    if ((mapping.ir2mouse.find(tmp_id) != mapping.ir2mouse.end())) {
+                        if(mapping.ir2mouse.at(tmp_id).first) {
+                            if (findVc(it->second, InputType::mouse) == nullptr) it->second.emplace_back(InputType::mouse);
+                        }
+                    }
 
-                    auto op = it->second.back().open();
-                    if (!op) {
-                        println("Virtual device could not be opened: {}", op.error().message());
-                        cout.flush();
-                        return 1;
+                    for (auto &vc : it->second) {
+                        auto op = vc.open();
+                        if (!op) {
+                            println("Virtual device could not be opened: {}", op.error().message());
+                            cout.flush();
+                            return 1;
+                        }
                     }
                 }
             }
@@ -204,30 +259,43 @@ int main () {
             cout.flush();
         }
 
+        // Update state
         for (auto &id : cm.getActiveControllers()) {
             if (cm.getController(id)->getType() == "wiimote" ) {
                 auto wm = dynamic_cast<WiiMote*>(cm.getController(id));
                 if (wm == nullptr) {println("Could not load controller {} as a WiiMote.", id); cout.flush(); return 1;}
 
-                std::unordered_map<uint16_t, bool> desired;
-
                 auto tmp_id = full_find_or_default(mapping, id);
                 if (tmp_id == -1) continue;
 
-                if (mapping.btn2key_map.find(tmp_id) != mapping.btn2key_map.end()) {
-                    if (mapping.btn2key_map.at(tmp_id).first) {
-                        const auto& btn_map = mapping.btn2key_map.at(tmp_id).second;
+                auto key_set = false;
+                auto mos_set = false;
+                auto mos_key = false;
 
-                        auto btns = wm->getButtons();
-                        for (const auto &m : btns) {
+                std::unordered_map<uint16_t, bool> desired;
+
+
+                if (mapping.btn2key.find(tmp_id) != mapping.btn2key.end()) {
+                    const auto& btn_map = mapping.btn2key.at(tmp_id).second;
+
+                    auto btns = wm->getButtons();
+                    for (const auto &m : btns) {
+                        if (btn_map.find(m.first) != btn_map.end()) {
                             desired[btn_map.at(m.first)] |= m.second;
+                            if (mapping.btn2key.at(tmp_id).first == InputConf::keymouse) {
+                                mos_key = mos_set = key_set = true;
+                            } else {
+                                auto in = InputConf2InputType(mapping.btn2key.at(tmp_id).first);
+                                if (in == InputType::keyboard) key_set = true;
+                                if (in == InputType::mouse) mos_key = mos_set = true;
+                            }
                         }
                     }
                 }
 
-                if (mapping.accel2key_map.find(tmp_id) != mapping.accel2key_map.end()) {
-                    if (mapping.accel2key_map.at(tmp_id).first) {
-                        const auto& accel_map = mapping.accel2key_map.at(tmp_id).second;
+                if (mapping.accel2key.find(tmp_id) != mapping.accel2key.end()) {
+                    if (mapping.accel2key.at(tmp_id).first) {
+                        const auto& accel_map = mapping.accel2key.at(tmp_id).second;
 
                         auto accel = wm->getAccel();
                         //println("x: {}, y: {}, z: {}", accel.at("x"), accel.at("y"), accel.at("z"));
@@ -252,26 +320,120 @@ int main () {
                             }
 
                             desired[accel_map.at(a.first).key] |= trigg;
+                            key_set = true;
                         }
                     }
                 }
 
-                for (const auto &[key_num, state] : desired) {
-                    auto vcup = id2vc.at(id).back().setKey(key_num, state);
-                    if (!vcup) {
-                        println("Virtual controller error: {}", vcup.error().message());
-                        cout.flush();
-                        running = false;
-                        continue;
+                if (key_set) {
+                    if (auto *kb = findVc(id2vc.at(id), InputType::keyboard)) {
+                        for (const auto &[key_num, state] : desired) {
+                            auto vcup = kb->setKey(key_num, state);
+                            if (!vcup) {
+                                if (vcup.error().value() == ENOENT) {
+                                    continue;
+                                } else {
+                                    println("Virtual controller error: {}", vcup.error().message());
+                                    cout.flush();
+                                    running = false;
+                                    continue;
+                                }
+                            }
+                        }
+
+                        auto vcsy = kb->sync();
+                        if (!vcsy) {
+                            println("Virtual controller sync error: {}", vcsy.error().message());
+                            cout.flush();
+                            running = false;
+                            continue;
+                        }
                     }
                 }
 
-                auto vcsy = id2vc.at(id).back().sync();
-                if (!vcsy) {
-                    println("Virtual controller sync error: {}", vcsy.error().message());
-                    cout.flush();
-                    running = false;
-                    continue;
+                pair <int32_t, int32_t> moveTo = {0, 0};
+
+                if (mapping.ir2mouse.find(tmp_id) != mapping.ir2mouse.end()) {
+                    if (mapping.ir2mouse.at(tmp_id).first) {
+                        const auto& ir_conf = mapping.ir2mouse.at(tmp_id).second;
+
+                        auto ir  = wm->getIr();
+
+                        Point new_point;
+                        //println("IR = p1: {}-{}, p2: {}-{}, p3: {}-{}, p4: {}-{}", ir.p1.x, ir.p1.y, ir.p2.x, ir.p2.y, ir.p3.x, ir.p3.y, ir.p4.x, ir.p4.y);
+                        if (ir.p1.visible() && ir.p2.visible()) {
+                            new_point.x = ir.p1.x - last_point.x;
+                            new_point.y = ir.p1.y - last_point.y;
+
+                            last_point.x = ir.p1.x;
+                            last_point.y = ir.p1.y;
+
+                            moveTo.first = -new_point.x * ir_conf.sensitivity;
+                            moveTo.second = new_point.y * ir_conf.sensitivity;
+                            mos_set = true;
+                        }
+                    }
+                }
+
+                if (mos_set) {
+                    if (auto *ms = findVc(id2vc.at(id), InputType::mouse)) {
+                        if (mos_key) {
+                            for (const auto &[key_num, state] : desired) {
+                                auto vcup = ms->setKey(key_num, state);
+                                if (!vcup) {
+                                    if (vcup.error().value() == ENOENT) {
+                                        continue;
+                                    } else {
+                                        println("Virtual controller error: {}", vcup.error().message());
+                                        cout.flush();
+                                        running = false;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                        auto vcup = ms->moveRel(REL_X, moveTo.first);
+                        auto vcupy = ms->moveRel(REL_Y, moveTo.second);
+                        if (!vcup) {
+                            if (vcup.error().value() == ENOENT) {
+                                for (const auto &[name, key] : key_code_map) {
+                                    if (key == REL_X) {
+                                        println("Virtual controller error: {} code is not supported for this device. Did you write it right?", name);
+                                        continue;
+                                    }
+                                }
+                            } else {
+                                println("Virtual controller error: {}", vcup.error().message());
+                            }
+                            cout.flush();
+                            running = false;
+                            continue;
+                        }
+
+                        if (!vcupy) {
+                            if (vcupy.error().value() == ENOENT) {
+                                for (const auto &[name, key] : key_code_map) {
+                                    if (key == REL_Y) {
+                                        println("Virtual controller error: {} code is not supported for this device. Did you write it right?", name);
+                                        continue;
+                                    }
+                                }
+                            } else {
+                                println("Virtual controller error: {}", vcupy.error().message());
+                            }
+                            cout.flush();
+                            running = false;
+                            continue;
+                        }
+
+                        auto vcsy = ms->sync();
+                        if (!vcsy) {
+                            println("Virtual controller sync error: {}", vcsy.error().message());
+                            cout.flush();
+                            running = false;
+                            continue;
+                        }
+                    }
                 }
             }
         }

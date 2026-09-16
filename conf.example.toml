@@ -3,6 +3,23 @@ name = "motionpluplus_example_config"
 [[wiimote]]
 
 [wiimote.buttons]
+map_to = "mouse+keyboard"
+a = "BTN_LEFT"
+b = "BTN_RIGHT"
+right = "KEY_RIGHT"
+left = "KEY_LEFT"
+up = "KEY_UP"
+down = "KEY_DOWN"
+
+[wiimote.ir]
+map_to = "mouse"
+sensitivity = 2.5
+
+
+[[wiimote]]
+ID = 2
+
+[wiimote.buttons]
 map_to = "keyboard"
 a = "KEY_W"
 b = "KEY_E"
@@ -15,10 +32,6 @@ minus = "KEY_KPMINUS"
 home = "KEY_HOME"
 one = "KEY_1"
 two = "KEY_2"
-
-
-[[wiimote]]
-ID = 2
 
 [wiimote.accel]
 map_to = "keyboard"

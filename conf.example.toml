@@ -13,8 +13,8 @@ down = "KEY_DOWN"
 
 [wiimote.ir]
 map_to = "mouse"
+mode = "absolute"
 sensitivity = 2.5
-
 
 [[wiimote]]
 ID = 2

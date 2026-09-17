@@ -11,7 +11,9 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local" CACHE PATH "Install path" FORCE)
 endif()
 
-option(INSTALL_UDEV_RULES "Install udev rule for virtual devices access" OFF)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
 
 add_executable(motionplusplus
     src/motionplusplus.cpp
@@ -46,18 +48,13 @@ target_compile_features(motionplusplus PUBLIC cxx_std_23)
 target_compile_options(motionplusplus PRIVATE
     -Wall
     -Wextra
-    -Wpedantic
-    -Werror
+    $<$<CONFIG:Debug>:-Wpedantic>
+    $<$<CONFIG:Debug>:-Werror>
 )
 
 install(TARGETS motionplusplus
     RUNTIME DESTINATION bin
 )
-
-if(INSTALL_UDEV_RULES)
-    install(FILES udev/99-motionplusplus.rules DESTINATION /etc/udev/rules.d)
-    install(CODE "execute_process(COMMAND udevadm control --reload-rules)")
-endif()
 
 install(FILES conf.example.toml
     DESTINATION $ENV{HOME}/.config/motionplusplus
@@ -65,5 +62,13 @@ install(FILES conf.example.toml
 
 install(FILES srv/motionplusplus.service
     DESTINATION $ENV{HOME}/.config/systemd/user
+)
+
+install(CODE "execute_process(COMMAND systemctl --user daemon-reload)")
+
+install(FILES udev/99-motionplusplus.rules
+    DESTINATION /etc/udev/rules.d
+    COMPONENT udev_rules
+    EXCLUDE_FROM_ALL
 )
 

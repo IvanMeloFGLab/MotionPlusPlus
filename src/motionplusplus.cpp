@@ -378,18 +378,48 @@ int main () {
                         //println("IR = p1: {}-{}, p2: {}-{}, p3: {}-{}, p4: {}-{}", ir.p1.x, ir.p1.y, ir.p2.x, ir.p2.y, ir.p3.x, ir.p3.y, ir.p4.x, ir.p4.y);
                         if (ir.p1.visible() && ir.p2.visible()) {
                             if (ir_conf.mode) {
+                                new_point.x = (ir.p1.x + ir.p2.x)/2 - id2last_point[id].x;
+                                new_point.y = (ir.p1.y + ir.p2.y)/2 - id2last_point[id].y;
+
+                                id2last_point[id].x = (ir.p1.x + ir.p2.x)/2;
+                                id2last_point[id].y = (ir.p1.y + ir.p2.y)/2;
+
+                                moveTo.first = 1023 - new_point.x * ir_conf.sensitivity;
+                                moveTo.second = new_point.y * ir_conf.sensitivity;
+                                mos_set = true;
+                            } else {
+                                moveTo.first = 1023 - (ir.p1.x + ir.p2.x)/2;
+                                moveTo.second = (ir.p1.y + ir.p2.y)/2;
+                            }
+                        } else if (ir.p1.visible()) {
+                            if (ir_conf.mode) {
                                 new_point.x = ir.p1.x - id2last_point[id].x;
                                 new_point.y = ir.p1.y - id2last_point[id].y;
 
                                 id2last_point[id].x = ir.p1.x;
                                 id2last_point[id].y = ir.p1.y;
 
-                                moveTo.first = -new_point.x * ir_conf.sensitivity;
+                                moveTo.first = 1023 - new_point.x * ir_conf.sensitivity;
                                 moveTo.second = new_point.y * ir_conf.sensitivity;
                                 mos_set = true;
                             } else {
                                 moveTo.first = 1023 - ir.p1.x;
                                 moveTo.second = ir.p1.y;
+                            }
+                        } else if (ir.p2.visible()) {
+                            if (ir_conf.mode) {
+                                new_point.x = ir.p2.x - id2last_point[id].x;
+                                new_point.y = ir.p2.y - id2last_point[id].y;
+
+                                id2last_point[id].x = ir.p2.x;
+                                id2last_point[id].y = ir.p2.y;
+
+                                moveTo.first = 1023 - new_point.x * ir_conf.sensitivity;
+                                moveTo.second = new_point.y * ir_conf.sensitivity;
+                                mos_set = true;
+                            } else {
+                                moveTo.first = 1023 - ir.p2.x;
+                                moveTo.second = ir.p2.y;
                             }
                         }
                     }
